@@ -2,9 +2,9 @@
 <html lang="ar">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 
-<title>HWTA DESERT WORLD V4</title>
+<title>HWTA DESERT WORLD V5</title>
 
 <style>
 *{
@@ -23,40 +23,50 @@ background:#b9a078;
 font-family:Arial,sans-serif;
 }
 
-canvas{
-display:block;
-}
+canvas{display:block;}
 
 #title{
 position:absolute;
-top:12px;
+top:10px;
 left:50%;
 transform:translateX(-50%);
 color:white;
-font-size:16px;
 font-weight:bold;
+font-size:16px;
 text-shadow:2px 2px 5px black;
 z-index:10;
 }
 
 #hud{
 position:absolute;
-top:40px;
-left:12px;
-padding:10px 14px;
-background:#101b16bb;
-border:1px solid #ffffff55;
+top:38px;
+left:10px;
+background:#101b16cc;
+color:white;
+padding:9px 13px;
+border-radius:9px;
+font-size:12px;
+line-height:1.8;
+z-index:10;
+}
+
+#weaponInfo{
+position:absolute;
+top:12px;
+right:12px;
+background:#17231ddd;
+border:1px solid #ffffff66;
 border-radius:9px;
 color:white;
+padding:9px 13px;
 font-size:12px;
-line-height:1.9;
 z-index:10;
 }
 
 #joystick{
 position:absolute;
-bottom:24px;
-left:24px;
+bottom:22px;
+left:22px;
 width:125px;
 height:125px;
 border-radius:50%;
@@ -73,51 +83,38 @@ left:33px;
 top:33px;
 border-radius:50%;
 background:#ffffffdd;
-box-shadow:0 2px 8px #0008;
 }
 
 .btn{
 position:absolute;
-right:25px;
-width:68px;
-height:68px;
+right:20px;
+width:65px;
+height:65px;
 border-radius:50%;
 border:2px solid #ffffffbb;
 background:#202820dd;
 color:white;
 font-weight:bold;
-font-size:12px;
+font-size:11px;
 z-index:20;
 }
 
-#jump{bottom:190px;}
-#run{bottom:110px;}
-#crouch{bottom:30px;}
-
-#help{
-position:absolute;
-bottom:8px;
-left:50%;
-transform:translateX(-50%);
-color:white;
-font-size:10px;
-text-shadow:1px 1px 4px black;
-z-index:10;
-}
+#jump{bottom:260px;}
+#run{bottom:185px;}
+#crouch{bottom:110px;}
+#weapon{bottom:35px;}
 
 #message{
 position:absolute;
-top:35%;
+top:40%;
 left:50%;
 transform:translate(-50%,-50%);
-background:#18231ddd;
+background:#17231ddd;
 color:white;
-padding:14px 22px;
+padding:13px 20px;
 border-radius:10px;
-font-size:14px;
 display:none;
 z-index:50;
-text-align:center;
 }
 
 #rotate{
@@ -131,10 +128,9 @@ align-items:center;
 justify-content:center;
 text-align:center;
 font-size:22px;
-line-height:2;
 }
 
-@media (orientation:portrait){
+@media(orientation:portrait){
 #rotate{display:flex;}
 }
 </style>
@@ -142,13 +138,17 @@ line-height:2;
 
 <body>
 
-<div id="title">HWTA DESERT WORLD V4</div>
+<div id="title">HWTA DESERT WORLD V5</div>
 
 <div id="hud">
 REGION: DESERT<br>
 STATUS: <span id="status">NORMAL</span><br>
 EQUIPMENT: <span id="equipment">0</span><br>
 ENEMIES: <span id="enemies">0</span>
+</div>
+
+<div id="weaponInfo">
+WEAPON: <span id="weaponName">PISTOL</span>
 </div>
 
 <div id="message"></div>
@@ -160,14 +160,10 @@ ENEMIES: <span id="enemies">0</span>
 <button class="btn" id="jump">JUMP</button>
 <button class="btn" id="run">RUN</button>
 <button class="btn" id="crouch">CROUCH</button>
-
-<div id="help">اسحب الشاشة لتحريك الكاميرا</div>
+<button class="btn" id="weapon">WEAPON</button>
 
 <div id="rotate">
-<div>
-HWTA DESERT WORLD<br>
-يرجى تدوير الهاتف للوضع الأفقي
-</div>
+<div>HWTA DESERT WORLD<br>يرجى تدوير الهاتف للوضع الأفقي</div>
 </div>
 
 <script type="module">
@@ -175,9 +171,7 @@ HWTA DESERT WORLD<br>
 import * as THREE from
 'https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js';
 
-// ==================================
 // ENGINE
-// ==================================
 
 const scene=new THREE.Scene();
 
@@ -212,9 +206,7 @@ renderer.toneMappingExposure=1.15;
 
 document.body.appendChild(renderer.domElement);
 
-// ==================================
 // LIGHTS
-// ==================================
 
 const sun=new THREE.DirectionalLight(0xffe4b5,2.5);
 
@@ -235,18 +227,14 @@ scene.add(new THREE.HemisphereLight(
 0xd6edff,0x806044,1.6
 ));
 
-// ==================================
 // MATERIALS
-// ==================================
 
 const sand=new THREE.MeshStandardMaterial({
-color:0xc7a36e,
-roughness:1
+color:0xc7a36e,roughness:1
 });
 
 const rock=new THREE.MeshStandardMaterial({
-color:0x8e7658,
-roughness:1
+color:0x8e7658
 });
 
 const wall=new THREE.MeshStandardMaterial({
@@ -281,9 +269,7 @@ const helmetMat=new THREE.MeshStandardMaterial({
 color:0x3e4d32
 });
 
-// ==================================
 // GROUND
-// ==================================
 
 const ground=new THREE.Mesh(
 new THREE.PlaneGeometry(1500,1500),
@@ -296,9 +282,7 @@ ground.receiveShadow=true;
 
 scene.add(ground);
 
-// ==================================
 // MOUNTAINS
-// ==================================
 
 for(let i=0;i<35;i++){
 
@@ -321,9 +305,7 @@ mountain.castShadow=true;
 scene.add(mountain);
 }
 
-// ==================================
 // DUNES
-// ==================================
 
 for(let i=0;i<55;i++){
 
@@ -347,9 +329,7 @@ dune.position.set(
 scene.add(dune);
 }
 
-// ==================================
-// COLLISION SYSTEM
-// ==================================
+// BUILDINGS
 
 const colliders=[];
 
@@ -368,14 +348,10 @@ mesh.receiveShadow=true;
 scene.add(mesh);
 
 colliders.push({
-x,z,
-halfX:w/2,
-halfZ:d/2
+x,z,halfX:w/2,halfZ:d/2
 });
 
 }
-
-// VILLAGE
 
 for(let i=0;i<15;i++){
 
@@ -390,20 +366,18 @@ wall
 
 }
 
-// MILITARY BASE
-
 building(220,150,40,12,35,darkGreen);
 building(275,150,25,9,25,wall);
 building(220,215,18,18,18,darkGreen);
 building(170,215,20,8,25,wall);
 
-// ==================================
-// SOLDIER CREATION
-// ==================================
+// PART CREATOR
 
 function part(parent,geometry,material,x,y,z){
 
-const mesh=new THREE.Mesh(geometry,material);
+const mesh=new THREE.Mesh(
+geometry,material
+);
 
 mesh.position.set(x,y,z);
 
@@ -416,6 +390,8 @@ return mesh;
 
 }
 
+// SOLDIER
+
 function createSoldier(){
 
 const soldier=new THREE.Group();
@@ -426,23 +402,17 @@ body.position.y=1.65;
 
 soldier.add(body);
 
-// TORSO
-
 part(
 body,
 new THREE.CapsuleGeometry(0.43,0.75,5,12),
 uniform,0,0.55,0
 );
 
-// ARMOR
-
 part(
 body,
 new THREE.BoxGeometry(1.05,0.85,0.7),
 darkGreen,0,0.65,0.05
 );
-
-// POCKETS
 
 for(const x of [-0.36,0,0.36]){
 
@@ -453,8 +423,6 @@ uniform,x,0.7,0.42
 );
 
 }
-
-// CAMOUFLAGE
 
 for(let i=0;i<12;i++){
 
@@ -469,23 +437,17 @@ Math.random()>0.5?camo1:camo2,
 
 }
 
-// BELT
-
 part(
 body,
 new THREE.BoxGeometry(0.95,0.15,0.65),
 black,0,0.05,0
 );
 
-// NECK
-
 part(
 body,
 new THREE.CylinderGeometry(0.13,0.15,0.25,12),
 skin,0,1.18,0
 );
-
-// HEAD
 
 const head=new THREE.Group();
 
@@ -499,8 +461,6 @@ new THREE.SphereGeometry(0.31,20,16),
 skin,0,0,0
 );
 
-// EARS
-
 for(const x of [-0.3,0.3]){
 
 part(
@@ -511,8 +471,6 @@ skin,x,0,0
 
 }
 
-// EYES
-
 for(const x of [-0.12,0.12]){
 
 part(
@@ -522,8 +480,6 @@ black,x,0.04,0.285
 );
 
 }
-
-// HELMET
 
 const helmet=part(
 head,
@@ -623,16 +579,138 @@ rightLeg
 }
 
 // ==================================
-// PLAYER
+// WEAPON MODELS
 // ==================================
+
+const weaponMetal=new THREE.MeshStandardMaterial({
+color:0x303631,
+metalness:0.65,
+roughness:0.4
+});
+
+const weaponGrip=new THREE.MeshStandardMaterial({
+color:0x252922,
+roughness:0.9
+});
+
+function createPistol(){
+
+const weapon=new THREE.Group();
+
+part(
+weapon,
+new THREE.BoxGeometry(0.16,0.16,0.42),
+weaponMetal,0,0,0
+);
+
+part(
+weapon,
+new THREE.BoxGeometry(0.13,0.28,0.13),
+weaponGrip,0,-0.19,0.08
+);
+
+part(
+weapon,
+new THREE.BoxGeometry(0.12,0.05,0.08),
+black,0,0.11,0.12
+);
+
+return weapon;
+
+}
+
+function createRifle(){
+
+const weapon=new THREE.Group();
+
+part(
+weapon,
+new THREE.BoxGeometry(0.16,0.16,0.95),
+weaponMetal,0,0,0
+);
+
+part(
+weapon,
+new THREE.BoxGeometry(0.12,0.12,0.55),
+weaponGrip,0,-0.12,0.35
+);
+
+part(
+weapon,
+new THREE.BoxGeometry(0.14,0.28,0.16),
+weaponGrip,0,-0.2,0.05
+);
+
+part(
+weapon,
+new THREE.CylinderGeometry(0.035,0.035,0.5,8),
+weaponMetal,0,0,0.62
+);
+
+part(
+weapon,
+new THREE.BoxGeometry(0.22,0.15,0.25),
+weaponGrip,0,0,-0.5
+);
+
+return weapon;
+
+}
+
+// PLAYER
 
 const player=createSoldier();
 
 scene.add(player.group);
 
-// ==================================
+// WEAPON SYSTEM
+
+const pistol=createPistol();
+
+const rifle=createRifle();
+
+player.rightArm.add(pistol);
+
+pistol.position.set(0,-0.85,0.3);
+
+pistol.rotation.x=-0.2;
+
+let currentWeapon=0;
+
+function switchWeapon(){
+
+currentWeapon=(currentWeapon+1)%2;
+
+player.rightArm.remove(pistol);
+player.rightArm.remove(rifle);
+
+if(currentWeapon===0){
+
+player.rightArm.add(pistol);
+
+pistol.position.set(0,-0.85,0.3);
+
+document.getElementById("weaponName").textContent="PISTOL";
+
+}else{
+
+player.rightArm.add(rifle);
+
+rifle.position.set(0,-0.45,0.15);
+
+rifle.rotation.x=0.15;
+
+document.getElementById("weaponName").textContent="RIFLE";
+
+}
+
+showMessage(
+currentWeapon===0?"تم اختيار المسدس":"تم اختيار البندقية"
+);
+
+}
+
 // ENEMY SOLDIERS
-// ==================================
 
 const enemies=[];
 
@@ -647,8 +725,6 @@ model.group.position.set(x,0,z);
 enemies.push({
 
 model,
-x,
-z,
 centerX:x,
 centerZ:z,
 radius,
@@ -661,8 +737,6 @@ phase:Math.random()*10
 
 }
 
-// PATROL POSITIONS
-
 createEnemy(100,80,18);
 createEnemy(145,190,22);
 createEnemy(250,90,20);
@@ -671,23 +745,9 @@ createEnemy(-180,-100,20);
 createEnemy(300,250,25);
 createEnemy(-250,200,20);
 
-document.getElementById("enemies").textContent=
-enemies.length;
-
-// ==================================
-// EQUIPMENT CRATES
-// ==================================
+// CRATES
 
 const crates=[];
-
-const crateMaterial=new THREE.MeshStandardMaterial({
-color:0x4b5837,
-roughness:0.9
-});
-
-const crateDetail=new THREE.MeshStandardMaterial({
-color:0x202b20
-});
 
 function createCrate(x,z){
 
@@ -695,43 +755,28 @@ const group=new THREE.Group();
 
 const box=new THREE.Mesh(
 new THREE.BoxGeometry(1.5,1.2,1.3),
-crateMaterial
+new THREE.MeshStandardMaterial({color:0x4b5837})
 );
 
 box.position.y=0.6;
-
-box.castShadow=true;
-box.receiveShadow=true;
 
 group.add(box);
 
 const stripe=new THREE.Mesh(
 new THREE.BoxGeometry(1.55,0.12,1.35),
-crateDetail
+new THREE.MeshStandardMaterial({color:0x202b20})
 );
 
 stripe.position.y=0.65;
 
 group.add(stripe);
 
-const lid=new THREE.Mesh(
-new THREE.BoxGeometry(1.55,0.15,1.35),
-crateMaterial
-);
-
-lid.position.y=1.25;
-
-group.add(lid);
-
 group.position.set(x,0,z);
 
 scene.add(group);
 
 crates.push({
-group,
-x,
-z,
-collected:false
+group,x,z,collected:false
 });
 
 }
@@ -744,10 +789,10 @@ createCrate(-150,-130);
 createCrate(350,300);
 createCrate(-300,250);
 createCrate(80,-180);
-createCrate(400,-100);
-createCrate(-400,-200);
 
 // ==================================
+// END OF PART ONE
+// ==================================// ==================================
 // PLAYER VARIABLES
 // ==================================
 
@@ -765,12 +810,33 @@ let cameraAngle=0;
 
 let equipment=0;
 
-let cameraDistance=8;
-let cameraHeight=4;
+const cameraDistance=8;
+const cameraHeight=4;
 
 const velocity=new THREE.Vector3();
-
 const clock=new THREE.Clock();
+
+// ==================================
+// USER INTERFACE
+// ==================================
+
+function showMessage(text){
+
+const message=document.getElementById("message");
+
+message.textContent=text;
+message.style.display="block";
+
+clearTimeout(window.messageTimer);
+
+window.messageTimer=setTimeout(()=>{
+message.style.display="none";
+},2200);
+
+}
+
+document.getElementById("enemies").textContent=
+enemies.length;
 
 // ==================================
 // JOYSTICK
@@ -875,48 +941,50 @@ cameraTouch=null;
 });
 
 // ==================================
-// END OF PART ONE
-// ==================================// ==================================
-// RUN BUTTON
+// BUTTONS
 // ==================================
+
+// RUN
 
 const runButton=document.getElementById("run");
 
 runButton.addEventListener("pointerdown",e=>{
+
 e.preventDefault();
+
 running=true;
+
 });
 
 function stopRun(){
+
 running=false;
+
 }
 
 runButton.addEventListener("pointerup",stopRun);
 runButton.addEventListener("pointercancel",stopRun);
 runButton.addEventListener("pointerleave",stopRun);
 
-// ==================================
-// CROUCH BUTTON
-// ==================================
+// CROUCH
 
-const crouchButton=document.getElementById("crouch");
+document.getElementById("crouch").addEventListener(
+"pointerdown",e=>{
 
-crouchButton.addEventListener("pointerdown",e=>{
 e.preventDefault();
 
 crouching=!crouching;
 
-crouchButton.style.background=
-crouching?"#687d39":"#202820dd";
-
 document.getElementById("status").textContent=
 crouching?"CROUCHING":"NORMAL";
 
-});
+document.getElementById("crouch").style.background=
+crouching?"#687d39":"#202820dd";
 
-// ==================================
-// JUMP BUTTON
-// ==================================
+}
+);
+
+// JUMP
 
 document.getElementById("jump").addEventListener(
 "pointerdown",e=>{
@@ -926,14 +994,28 @@ e.preventDefault();
 if(!jumping&&!crouching){
 
 verticalSpeed=7;
+
 jumping=true;
 
 }
 
-});
+}
+);
+
+// WEAPON SWITCH
+
+document.getElementById("weapon").addEventListener(
+"pointerdown",e=>{
+
+e.preventDefault();
+
+switchWeapon();
+
+}
+);
 
 // ==================================
-// COLLISION SYSTEM
+// COLLISION
 // ==================================
 
 function collides(x,z){
@@ -954,7 +1036,9 @@ const dx=x-closestX;
 const dz=z-closestZ;
 
 if(dx*dx+dz*dz<radius*radius){
+
 return true;
+
 }
 
 }
@@ -976,29 +1060,7 @@ return Math.sqrt(
 }
 
 // ==================================
-// MESSAGE
-// ==================================
-
-let messageTimer=null;
-
-function showMessage(text){
-
-const message=document.getElementById("message");
-
-message.textContent=text;
-
-message.style.display="block";
-
-clearTimeout(messageTimer);
-
-messageTimer=setTimeout(()=>{
-message.style.display="none";
-},2200);
-
-}
-
-// ==================================
-// ENEMY PATROL SYSTEM
+// ENEMY PATROL
 // ==================================
 
 function updateEnemies(delta){
@@ -1006,13 +1068,6 @@ function updateEnemies(delta){
 for(const enemy of enemies){
 
 const model=enemy.model;
-
-const dist=distance(
-player.group.position.x,
-player.group.position.z,
-enemy.group?.position?.x ?? enemy.x,
-enemy.group?.position?.z ?? enemy.z
-);
 
 const enemyX=model.group.position.x;
 const enemyZ=model.group.position.z;
@@ -1024,7 +1079,7 @@ const playerDistance=distance(
 playerX,playerZ,enemyX,enemyZ
 );
 
-// ALERT WHEN PLAYER APPROACHES
+// ALERT
 
 enemy.alert=playerDistance<25;
 
@@ -1033,14 +1088,11 @@ let targetZ;
 
 if(enemy.alert){
 
-// The enemy reacts by moving away from the player.
-
 const dx=enemyX-playerX;
 const dz=enemyZ-playerZ;
 
 const length=Math.max(
-0.001,
-Math.sqrt(dx*dx+dz*dz)
+0.001,Math.sqrt(dx*dx+dz*dz)
 );
 
 targetX=dx/length;
@@ -1048,15 +1100,12 @@ targetZ=dz/length;
 
 }else{
 
-// PATROL
-
 enemy.angle+=
-Math.sin(clock.elapsedTime+enemy.phase)*delta*0.35;
+Math.sin(clock.elapsedTime+enemy.phase)*
+delta*0.35;
 
 targetX=Math.cos(enemy.angle);
 targetZ=Math.sin(enemy.angle);
-
-// Keep the patrol around its starting area.
 
 const homeDistance=distance(
 enemyX,enemyZ,
@@ -1087,22 +1136,22 @@ const nextX=enemyX+targetX*speed*delta;
 const nextZ=enemyZ+targetZ*speed*delta;
 
 if(!collides(nextX,enemyZ)){
+
 model.group.position.x=nextX;
+
 }
 
 if(!collides(model.group.position.x,nextZ)){
+
 model.group.position.z=nextZ;
+
 }
 
 // ROTATION
 
-if(Math.abs(targetX)+Math.abs(targetZ)>0.01){
-
 model.group.rotation.y=Math.atan2(
 targetX,targetZ
 );
-
-}
 
 // WALK ANIMATION
 
@@ -1115,12 +1164,6 @@ model.rightLeg.rotation.x=-swing;
 
 model.leftArm.rotation.x=-swing*0.6;
 model.rightArm.rotation.x=swing*0.6;
-
-if(enemy.alert){
-model.body.rotation.x=0.06;
-}else{
-model.body.rotation.x=0;
-}
 
 }
 
@@ -1154,7 +1197,7 @@ equipment++;
 document.getElementById("equipment").textContent=
 equipment;
 
-showMessage("تم جمع صندوق معدات!");
+showMessage("تم جمع صندوق المعدات!");
 
 }
 
@@ -1199,7 +1242,7 @@ camera.lookAt(target);
 }
 
 // ==================================
-// ANIMATION LOOP
+// MAIN ANIMATION
 // ==================================
 
 function animate(){
@@ -1221,18 +1264,18 @@ forward*Math.cos(cameraAngle);
 
 // SPEED
 
-const walkSpeed=5;
-const runSpeed=9;
-const crouchSpeed=2.2;
-
-let speed=walkSpeed;
+let speed=5;
 
 if(running&&!crouching){
-speed=runSpeed;
+
+speed=9;
+
 }
 
 if(crouching){
-speed=crouchSpeed;
+
+speed=2.2;
+
 }
 
 // MOVEMENT
@@ -1321,7 +1364,7 @@ gaitTime+=delta*(running?13:8);
 }
 
 const movementAmount=Math.min(
-1,currentSpeed/runSpeed
+1,currentSpeed/9
 );
 
 const swing=isMoving?
@@ -1333,7 +1376,7 @@ player.rightLeg.rotation.x=-swing*0.65;
 player.leftArm.rotation.x=-swing*0.55;
 player.rightArm.rotation.x=swing*0.55;
 
-// CROUCH ANIMATION
+// CROUCH
 
 const targetBodyHeight=crouching?0.65:1.65;
 
@@ -1367,15 +1410,11 @@ jumping=false;
 
 }
 
-// ENEMY SYSTEM
+// UPDATE SYSTEMS
 
 updateEnemies(delta);
 
-// CRATES
-
 updateCrates();
-
-// CAMERA
 
 updateCamera(delta);
 
@@ -1412,14 +1451,13 @@ Math.min(devicePixelRatio,1.5)
 });
 
 // ==================================
-// START GAME
+// START
 // ==================================
 
 animate();
 
-showMessage("WELCOME TO HWTA DESERT WORLD V4");
+showMessage("WELCOME TO HWTA DESERT WORLD V5");
 
 </script>
-
 </body>
 </html>
