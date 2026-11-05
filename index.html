@@ -1,529 +1,576 @@
-<!DOCTYPE html><html lang="ar">
+<!DOCTYPE html>
+<html lang="ar">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
-<title>HWTA DESERT WORLD V3</title><style>
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    touch-action: none;
-    user-select: none;
+
+<title>HWTA DESERT WORLD V4</title>
+
+<style>
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+touch-action:none;
+user-select:none;
 }
 
-html, body {
-    width: 100%;
-    height: 100%;
-    overflow: hidden;
-    background: #b9a078;
-    font-family: Arial, sans-serif;
+html,body{
+width:100%;
+height:100%;
+overflow:hidden;
+background:#b9a078;
+font-family:Arial,sans-serif;
 }
 
-canvas {
-    display: block;
+canvas{
+display:block;
 }
 
-#title {
-    position: absolute;
-    top: 12px;
-    left: 50%;
-    transform: translateX(-50%);
-    color: white;
-    font-size: 17px;
-    font-weight: bold;
-    text-shadow: 2px 2px 5px black;
-    z-index: 10;
+#title{
+position:absolute;
+top:12px;
+left:50%;
+transform:translateX(-50%);
+color:white;
+font-size:16px;
+font-weight:bold;
+text-shadow:2px 2px 5px black;
+z-index:10;
 }
 
-#info {
-    position: absolute;
-    top: 40px;
-    left: 12px;
-    color: white;
-    font-size: 11px;
-    text-shadow: 2px 2px 4px black;
-    z-index: 10;
+#hud{
+position:absolute;
+top:40px;
+left:12px;
+padding:10px 14px;
+background:#101b16bb;
+border:1px solid #ffffff55;
+border-radius:9px;
+color:white;
+font-size:12px;
+line-height:1.9;
+z-index:10;
 }
 
-#joystick {
-    position: absolute;
-    bottom: 24px;
-    left: 24px;
-    width: 125px;
-    height: 125px;
-    border-radius: 50%;
-    background: #ffffff35;
-    border: 2px solid #ffffff90;
-    z-index: 20;
+#joystick{
+position:absolute;
+bottom:24px;
+left:24px;
+width:125px;
+height:125px;
+border-radius:50%;
+background:#ffffff35;
+border:2px solid #ffffff90;
+z-index:20;
 }
 
-#stick {
-    position: absolute;
-    width: 55px;
-    height: 55px;
-    left: 33px;
-    top: 33px;
-    border-radius: 50%;
-    background: #ffffffdd;
-    box-shadow: 0 2px 8px #0008;
+#stick{
+position:absolute;
+width:55px;
+height:55px;
+left:33px;
+top:33px;
+border-radius:50%;
+background:#ffffffdd;
+box-shadow:0 2px 8px #0008;
 }
 
-.btn {
-    position: absolute;
-    right: 25px;
-    width: 70px;
-    height: 70px;
-    border-radius: 50%;
-    border: 2px solid #ffffffbb;
-    background: #202820cc;
-    color: white;
-    font-weight: bold;
-    z-index: 20;
+.btn{
+position:absolute;
+right:25px;
+width:68px;
+height:68px;
+border-radius:50%;
+border:2px solid #ffffffbb;
+background:#202820dd;
+color:white;
+font-weight:bold;
+font-size:12px;
+z-index:20;
 }
 
-#jump { bottom: 110px; }
-#run { bottom: 25px; }
+#jump{bottom:190px;}
+#run{bottom:110px;}
+#crouch{bottom:30px;}
 
-#help {
-    position: absolute;
-    bottom: 8px;
-    left: 50%;
-    transform: translateX(-50%);
-    color: white;
-    font-size: 10px;
-    text-shadow: 1px 1px 4px black;
-    z-index: 10;
+#help{
+position:absolute;
+bottom:8px;
+left:50%;
+transform:translateX(-50%);
+color:white;
+font-size:10px;
+text-shadow:1px 1px 4px black;
+z-index:10;
 }
 
-#rotate {
-    display: none;
-    position: absolute;
-    inset: 0;
-    background: #17221b;
-    color: white;
-    z-index: 100;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    font-size: 22px;
-    line-height: 2;
+#message{
+position:absolute;
+top:35%;
+left:50%;
+transform:translate(-50%,-50%);
+background:#18231ddd;
+color:white;
+padding:14px 22px;
+border-radius:10px;
+font-size:14px;
+display:none;
+z-index:50;
+text-align:center;
 }
 
-@media (orientation: portrait) {
-    #rotate { display: flex; }
+#rotate{
+display:none;
+position:absolute;
+inset:0;
+background:#17221b;
+color:white;
+z-index:100;
+align-items:center;
+justify-content:center;
+text-align:center;
+font-size:22px;
+line-height:2;
 }
-</style></head><body><div id="title">HWTA DESERT WORLD V3</div>
-<div id="info">DESERT REGION | EXPLORATION</div><div id="joystick">
-    <div id="stick"></div>
-</div><button class="btn" id="jump">JUMP</button>
+
+@media (orientation:portrait){
+#rotate{display:flex;}
+}
+</style>
+</head>
+
+<body>
+
+<div id="title">HWTA DESERT WORLD V4</div>
+
+<div id="hud">
+REGION: DESERT<br>
+STATUS: <span id="status">NORMAL</span><br>
+EQUIPMENT: <span id="equipment">0</span><br>
+ENEMIES: <span id="enemies">0</span>
+</div>
+
+<div id="message"></div>
+
+<div id="joystick">
+<div id="stick"></div>
+</div>
+
+<button class="btn" id="jump">JUMP</button>
 <button class="btn" id="run">RUN</button>
+<button class="btn" id="crouch">CROUCH</button>
 
-<div id="help">اسحب الشاشة لتحريك الكاميرا</div><div id="rotate">
-    <div>
-        HWTA DESERT WORLD<br>
-        يرجى تدوير الهاتف للوضع الأفقي
-    </div>
-</div><script type="module">
+<div id="help">اسحب الشاشة لتحريك الكاميرا</div>
+
+<div id="rotate">
+<div>
+HWTA DESERT WORLD<br>
+يرجى تدوير الهاتف للوضع الأفقي
+</div>
+</div>
+
+<script type="module">
 
 import * as THREE from
 'https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js';
 
+// ==================================
 // ENGINE
+// ==================================
 
-const scene = new THREE.Scene();
+const scene=new THREE.Scene();
 
-scene.background = new THREE.Color(0x91b9d0);
+scene.background=new THREE.Color(0x91b9d0);
 
-scene.fog = new THREE.Fog(0xc7ad84, 100, 850);
+scene.fog=new THREE.Fog(0xc7ad84,100,850);
 
-const camera = new THREE.PerspectiveCamera(
-    65, innerWidth / innerHeight, 0.1, 1500
+const camera=new THREE.PerspectiveCamera(
+65,innerWidth/innerHeight,0.1,1500
 );
 
-const renderer = new THREE.WebGLRenderer({
-    antialias: true,
-    powerPreference: "high-performance"
+const renderer=new THREE.WebGLRenderer({
+antialias:true,
+powerPreference:"high-performance"
 });
 
-renderer.setSize(innerWidth, innerHeight);
-renderer.setPixelRatio(Math.min(devicePixelRatio, 1.5));
+renderer.setSize(innerWidth,innerHeight);
 
-renderer.shadowMap.enabled = true;
-renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-renderer.outputColorSpace = THREE.SRGBColorSpace;
-renderer.toneMapping = THREE.ACESFilmicToneMapping;
-renderer.toneMappingExposure = 1.15;
+renderer.setPixelRatio(
+Math.min(devicePixelRatio,1.5)
+);
+
+renderer.shadowMap.enabled=true;
+
+renderer.shadowMap.type=THREE.PCFSoftShadowMap;
+
+renderer.outputColorSpace=THREE.SRGBColorSpace;
+
+renderer.toneMapping=THREE.ACESFilmicToneMapping;
+
+renderer.toneMappingExposure=1.15;
 
 document.body.appendChild(renderer.domElement);
 
+// ==================================
 // LIGHTS
+// ==================================
 
-const sun = new THREE.DirectionalLight(0xffe4b5, 2.5);
+const sun=new THREE.DirectionalLight(0xffe4b5,2.5);
 
-sun.position.set(-100, 180, 100);
-sun.castShadow = true;
-sun.shadow.mapSize.set(1024, 1024);
+sun.position.set(-100,180,100);
 
-sun.shadow.camera.left = -100;
-sun.shadow.camera.right = 100;
-sun.shadow.camera.top = 100;
-sun.shadow.camera.bottom = -100;
+sun.castShadow=true;
+
+sun.shadow.mapSize.set(1024,1024);
+
+sun.shadow.camera.left=-100;
+sun.shadow.camera.right=100;
+sun.shadow.camera.top=100;
+sun.shadow.camera.bottom=-100;
 
 scene.add(sun);
 
 scene.add(new THREE.HemisphereLight(
-    0xd6edff, 0x806044, 1.6
+0xd6edff,0x806044,1.6
 ));
 
+// ==================================
 // MATERIALS
+// ==================================
 
-const sand = new THREE.MeshStandardMaterial({
-    color: 0xc7a36e,
-    roughness: 1
+const sand=new THREE.MeshStandardMaterial({
+color:0xc7a36e,
+roughness:1
 });
 
-const rock = new THREE.MeshStandardMaterial({
-    color: 0x8e7658,
-    roughness: 1
+const rock=new THREE.MeshStandardMaterial({
+color:0x8e7658,
+roughness:1
 });
 
-const wall = new THREE.MeshStandardMaterial({
-    color: 0xb69a74,
-    roughness: 0.95
+const wall=new THREE.MeshStandardMaterial({
+color:0xb69a74
 });
 
-const green = new THREE.MeshStandardMaterial({
-    color: 0x46583b,
-    roughness: 0.95
+const darkGreen=new THREE.MeshStandardMaterial({
+color:0x29362a
 });
 
-const darkGreen = new THREE.MeshStandardMaterial({
-    color: 0x29362a,
-    roughness: 0.9
+const uniform=new THREE.MeshStandardMaterial({
+color:0x526341
 });
 
-const skin = new THREE.MeshStandardMaterial({
-    color: 0x987052,
-    roughness: 0.85
+const camo1=new THREE.MeshStandardMaterial({
+color:0x7c8954
 });
 
-const black = new THREE.MeshStandardMaterial({
-    color: 0x20231e
+const camo2=new THREE.MeshStandardMaterial({
+color:0x303e2b
 });
 
+const skin=new THREE.MeshStandardMaterial({
+color:0x987052
+});
+
+const black=new THREE.MeshStandardMaterial({
+color:0x20231e
+});
+
+const helmetMat=new THREE.MeshStandardMaterial({
+color:0x3e4d32
+});
+
+// ==================================
 // GROUND
+// ==================================
 
-const ground = new THREE.Mesh(
-    new THREE.PlaneGeometry(1500, 1500),
-    sand
+const ground=new THREE.Mesh(
+new THREE.PlaneGeometry(1500,1500),
+sand
 );
 
-ground.rotation.x = -Math.PI / 2;
-ground.position.y = -0.1;
-ground.receiveShadow = true;
+ground.rotation.x=-Math.PI/2;
+ground.position.y=-0.1;
+ground.receiveShadow=true;
 
 scene.add(ground);
 
+// ==================================
 // MOUNTAINS
+// ==================================
 
-for (let i = 0; i < 35; i++) {
+for(let i=0;i<35;i++){
 
-    const size = 35 + Math.random() * 65;
-    const height = 60 + Math.random() * 100;
+const size=35+Math.random()*65;
+const height=60+Math.random()*100;
 
-    const mountain = new THREE.Mesh(
-        new THREE.ConeGeometry(size, height, 7),
-        rock
-    );
+const mountain=new THREE.Mesh(
+new THREE.ConeGeometry(size,height,7),
+rock
+);
 
-    mountain.position.set(
-        (Math.random() - 0.5) * 1300,
-        height / 2 - 3,
-        (Math.random() - 0.5) * 1300
-    );
+mountain.position.set(
+(Math.random()-0.5)*1300,
+height/2-3,
+(Math.random()-0.5)*1300
+);
 
-    mountain.castShadow = true;
-    scene.add(mountain);
+mountain.castShadow=true;
+
+scene.add(mountain);
 }
 
+// ==================================
 // DUNES
+// ==================================
 
-for (let i = 0; i < 55; i++) {
+for(let i=0;i<55;i++){
 
-    const dune = new THREE.Mesh(
-        new THREE.SphereGeometry(1, 12, 8),
-        sand
-    );
+const dune=new THREE.Mesh(
+new THREE.SphereGeometry(1,12,8),
+sand
+);
 
-    dune.scale.set(
-        30 + Math.random() * 40,
-        4 + Math.random() * 7,
-        25 + Math.random() * 35
-    );
+dune.scale.set(
+30+Math.random()*40,
+4+Math.random()*7,
+25+Math.random()*35
+);
 
-    dune.position.set(
-        (Math.random() - 0.5) * 1300,
-        -3,
-        (Math.random() - 0.5) * 1300
-    );
+dune.position.set(
+(Math.random()-0.5)*1300,
+-3,
+(Math.random()-0.5)*1300
+);
 
-    scene.add(dune);
+scene.add(dune);
 }
 
-// BUILDINGS AND COLLISION
+// ==================================
+// COLLISION SYSTEM
+// ==================================
 
-const colliders = [];
+const colliders=[];
 
-function building(x, z, w, h, d, material) {
+function building(x,z,w,h,d,material){
 
-    const mesh = new THREE.Mesh(
-        new THREE.BoxGeometry(w, h, d),
-        material
-    );
+const mesh=new THREE.Mesh(
+new THREE.BoxGeometry(w,h,d),
+material
+);
 
-    mesh.position.set(x, h / 2, z);
-    mesh.castShadow = true;
-    mesh.receiveShadow = true;
+mesh.position.set(x,h/2,z);
 
-    scene.add(mesh);
+mesh.castShadow=true;
+mesh.receiveShadow=true;
 
-    colliders.push({
-        x, z,
-        halfX: w / 2,
-        halfZ: d / 2
-    });
+scene.add(mesh);
+
+colliders.push({
+x,z,
+halfX:w/2,
+halfZ:d/2
+});
+
 }
 
-// DESERT VILLAGE
+// VILLAGE
 
-for (let i = 0; i < 15; i++) {
+for(let i=0;i<15;i++){
 
-    building(
-        -200 + Math.random() * 400,
-        -200 + Math.random() * 400,
-        12 + Math.random() * 10,
-        8 + Math.random() * 5,
-        12 + Math.random() * 10,
-        wall
-    );
+building(
+-200+Math.random()*400,
+-200+Math.random()*400,
+12+Math.random()*10,
+8+Math.random()*5,
+12+Math.random()*10,
+wall
+);
+
 }
 
 // MILITARY BASE
 
-building(220, 150, 40, 12, 35, darkGreen);
-building(275, 150, 25, 9, 25, wall);
-building(220, 215, 18, 18, 18, darkGreen);
-building(170, 215, 20, 8, 25, wall);
+building(220,150,40,12,35,darkGreen);
+building(275,150,25,9,25,wall);
+building(220,215,18,18,18,darkGreen);
+building(170,215,20,8,25,wall);
 
-// SOLDIER MATERIALS
+// ==================================
+// SOLDIER CREATION
+// ==================================
 
-const uniform = new THREE.MeshStandardMaterial({
-    color: 0x526341,
-    roughness: 0.95
-});
+function part(parent,geometry,material,x,y,z){
 
-const camo1 = new THREE.MeshStandardMaterial({
-    color: 0x7c8954
-});
+const mesh=new THREE.Mesh(geometry,material);
 
-const camo2 = new THREE.MeshStandardMaterial({
-    color: 0x303e2b
-});
+mesh.position.set(x,y,z);
 
-const helmetMat = new THREE.MeshStandardMaterial({
-    color: 0x3e4d32,
-    roughness: 0.8
-});
+mesh.castShadow=true;
+mesh.receiveShadow=true;
 
-// PLAYER
+parent.add(mesh);
 
-const player = new THREE.Group();
-scene.add(player);
+return mesh;
 
-const soldier = new THREE.Group();
-player.add(soldier);
-
-function part(parent, geometry, material, x, y, z) {
-
-    const mesh = new THREE.Mesh(geometry, material);
-
-    mesh.position.set(x, y, z);
-    mesh.castShadow = true;
-    mesh.receiveShadow = true;
-
-    parent.add(mesh);
-
-    return mesh;
 }
+
+function createSoldier(){
+
+const soldier=new THREE.Group();
+
+const body=new THREE.Group();
+
+body.position.y=1.65;
+
+soldier.add(body);
 
 // TORSO
 
-const body = new THREE.Group();
-
-body.position.y = 1.65;
-soldier.add(body);
-
 part(
-    body,
-    new THREE.CapsuleGeometry(0.43, 0.75, 5, 12),
-    uniform, 0, 0.55, 0
+body,
+new THREE.CapsuleGeometry(0.43,0.75,5,12),
+uniform,0,0.55,0
 );
 
-// ARMOR VEST
+// ARMOR
 
 part(
-    body,
-    new THREE.BoxGeometry(1.05, 0.85, 0.7),
-    darkGreen, 0, 0.65, 0.05
+body,
+new THREE.BoxGeometry(1.05,0.85,0.7),
+darkGreen,0,0.65,0.05
 );
 
 // POCKETS
 
-for (const x of [-0.36, 0, 0.36]) {
+for(const x of [-0.36,0,0.36]){
 
-    part(
-        body,
-        new THREE.BoxGeometry(0.25, 0.28, 0.12),
-        uniform, x, 0.7, 0.42
-    );
+part(
+body,
+new THREE.BoxGeometry(0.25,0.28,0.12),
+uniform,x,0.7,0.42
+);
+
 }
 
-// CAMOUFLAGE DETAILS
+// CAMOUFLAGE
 
-for (let i = 0; i < 22; i++) {
+for(let i=0;i<12;i++){
 
-    part(
-        body,
-        new THREE.BoxGeometry(
-            0.12 + Math.random() * 0.14,
-            0.06 + Math.random() * 0.12,
-            0.025
-        ),
-        Math.random() > 0.5 ? camo1 : camo2,
-        (Math.random() - 0.5) * 0.8,
-        0.2 + Math.random() * 0.9,
-        0.36
-    );
+part(
+body,
+new THREE.BoxGeometry(0.15,0.1,0.03),
+Math.random()>0.5?camo1:camo2,
+(Math.random()-0.5)*0.8,
+0.2+Math.random()*0.9,
+0.36
+);
+
 }
 
 // BELT
 
 part(
-    body,
-    new THREE.BoxGeometry(0.95, 0.15, 0.65),
-    black, 0, 0.05, 0
+body,
+new THREE.BoxGeometry(0.95,0.15,0.65),
+black,0,0.05,0
 );
 
 // NECK
 
 part(
-    body,
-    new THREE.CylinderGeometry(0.13, 0.15, 0.25, 12),
-    skin, 0, 1.18, 0
+body,
+new THREE.CylinderGeometry(0.13,0.15,0.25,12),
+skin,0,1.18,0
 );
 
 // HEAD
 
-const head = new THREE.Group();
-head.position.set(0, 1.55, 0);
+const head=new THREE.Group();
+
+head.position.set(0,1.55,0);
+
 body.add(head);
 
 part(
-    head,
-    new THREE.SphereGeometry(0.31, 24, 20),
-    skin, 0, 0, 0
+head,
+new THREE.SphereGeometry(0.31,20,16),
+skin,0,0,0
 );
 
 // EARS
 
-for (const x of [-0.3, 0.3]) {
+for(const x of [-0.3,0.3]){
 
-    part(
-        head,
-        new THREE.SphereGeometry(0.075, 12, 10),
-        skin, x, 0, 0
-    );
+part(
+head,
+new THREE.SphereGeometry(0.075,10,8),
+skin,x,0,0
+);
+
 }
 
 // EYES
 
-const eyes = new THREE.MeshStandardMaterial({
-    color: 0x171713
-});
-
-for (const x of [-0.12, 0.12]) {
-
-    part(
-        head,
-        new THREE.SphereGeometry(0.035, 10, 8),
-        eyes, x, 0.04, 0.285
-    );
-}
-
-// NOSE
+for(const x of [-0.12,0.12]){
 
 part(
-    head,
-    new THREE.ConeGeometry(0.055, 0.13, 8),
-    skin, 0, -0.04, 0.30
+head,
+new THREE.SphereGeometry(0.035,8,8),
+black,x,0.04,0.285
 );
+
+}
 
 // HELMET
 
-const helmet = part(
-    head,
-    new THREE.SphereGeometry(0.36, 24, 16),
-    helmetMat, 0, 0.2, 0
+const helmet=part(
+head,
+new THREE.SphereGeometry(0.36,20,16),
+helmetMat,0,0.2,0
 );
 
-helmet.scale.set(1.12, 0.75, 1.08);
+helmet.scale.set(1.12,0.75,1.08);
 
 part(
-    head,
-    new THREE.CylinderGeometry(0.39, 0.39, 0.055, 24),
-    darkGreen, 0, 0.08, 0
+head,
+new THREE.CylinderGeometry(0.39,0.39,0.055,20),
+darkGreen,0,0.08,0
 );
 
 // BACKPACK
 
 part(
-    body,
-    new THREE.BoxGeometry(0.78, 0.9, 0.35),
-    darkGreen, 0, 0.55, -0.48
+body,
+new THREE.BoxGeometry(0.78,0.9,0.35),
+darkGreen,0,0.55,-0.48
 );
-
-for (const y of [0.25, 0.55, 0.85]) {
-
-    part(
-        body,
-        new THREE.BoxGeometry(0.58, 0.16, 0.12),
-        uniform, 0, y, -0.69
-    );
-}
 
 // ARMS
 
-const leftArm = new THREE.Group();
-const rightArm = new THREE.Group();
+const leftArm=new THREE.Group();
+const rightArm=new THREE.Group();
 
-leftArm.position.set(-0.66, 0.95, 0);
-rightArm.position.set(0.66, 0.95, 0);
+leftArm.position.set(-0.66,0.95,0);
+rightArm.position.set(0.66,0.95,0);
 
-body.add(leftArm, rightArm);
+body.add(leftArm,rightArm);
 
-function createArm(parent) {
+function createArm(parent){
 
-    part(
-        parent,
-        new THREE.CapsuleGeometry(0.19, 0.55, 5, 10),
-        uniform, 0, -0.38, 0
-    );
+part(
+parent,
+new THREE.CapsuleGeometry(0.19,0.55,5,10),
+uniform,0,-0.38,0
+);
 
-    part(
-        parent,
-        new THREE.SphereGeometry(0.15, 12, 10),
-        black, 0, -0.88, 0
-    );
+part(
+parent,
+new THREE.SphereGeometry(0.15,10,8),
+black,0,-0.88,0
+);
+
 }
 
 createArm(leftArm);
@@ -531,388 +578,848 @@ createArm(rightArm);
 
 // LEGS
 
-const leftLeg = new THREE.Group();
-const rightLeg = new THREE.Group();
+const leftLeg=new THREE.Group();
+const rightLeg=new THREE.Group();
 
-leftLeg.position.set(-0.29, 1.65, 0);
-rightLeg.position.set(0.29, 1.65, 0);
+leftLeg.position.set(-0.29,1.65,0);
+rightLeg.position.set(0.29,1.65,0);
 
-soldier.add(leftLeg, rightLeg);
+soldier.add(leftLeg,rightLeg);
 
-function createLeg(parent) {
+function createLeg(parent){
 
-    part(
-        parent,
-        new THREE.CapsuleGeometry(0.23, 0.65, 5, 10),
-        uniform, 0, -0.43, 0
-    );
+part(
+parent,
+new THREE.CapsuleGeometry(0.23,0.65,5,10),
+uniform,0,-0.43,0
+);
 
-    part(
-        parent,
-        new THREE.BoxGeometry(0.34, 0.24, 0.18),
-        darkGreen, 0, -0.82, 0.14
-    );
+part(
+parent,
+new THREE.BoxGeometry(0.34,0.24,0.18),
+darkGreen,0,-0.82,0.14
+);
 
-    part(
-        parent,
-        new THREE.BoxGeometry(0.4, 0.32, 0.62),
-        black, 0, -1.05, 0.14
-    );
+part(
+parent,
+new THREE.BoxGeometry(0.4,0.32,0.62),
+black,0,-1.05,0.14
+);
+
 }
 
 createLeg(leftLeg);
 createLeg(rightLeg);
 
-// MOVEMENT VARIABLES
+return{
+group:soldier,
+body,
+leftArm,
+rightArm,
+leftLeg,
+rightLeg
+};
 
-let moveX = 0;
-let moveY = 0;
+}
 
-let running = false;
-let jumping = false;
-let verticalSpeed = 0;
+// ==================================
+// PLAYER
+// ==================================
 
-let gaitTime = 0;
-let cameraAngle = 0;
+const player=createSoldier();
 
-const cameraDistance = 8;
-const cameraHeight = 4;
+scene.add(player.group);
 
-const velocity = new THREE.Vector3();
-const clock = new THREE.Clock();
+// ==================================
+// ENEMY SOLDIERS
+// ==================================
 
+const enemies=[];
+
+function createEnemy(x,z,radius){
+
+const model=createSoldier();
+
+scene.add(model.group);
+
+model.group.position.set(x,0,z);
+
+enemies.push({
+
+model,
+x,
+z,
+centerX:x,
+centerZ:z,
+radius,
+angle:Math.random()*Math.PI*2,
+speed:1.2+Math.random()*0.6,
+alert:false,
+phase:Math.random()*10
+
+});
+
+}
+
+// PATROL POSITIONS
+
+createEnemy(100,80,18);
+createEnemy(145,190,22);
+createEnemy(250,90,20);
+createEnemy(-120,100,25);
+createEnemy(-180,-100,20);
+createEnemy(300,250,25);
+createEnemy(-250,200,20);
+
+document.getElementById("enemies").textContent=
+enemies.length;
+
+// ==================================
+// EQUIPMENT CRATES
+// ==================================
+
+const crates=[];
+
+const crateMaterial=new THREE.MeshStandardMaterial({
+color:0x4b5837,
+roughness:0.9
+});
+
+const crateDetail=new THREE.MeshStandardMaterial({
+color:0x202b20
+});
+
+function createCrate(x,z){
+
+const group=new THREE.Group();
+
+const box=new THREE.Mesh(
+new THREE.BoxGeometry(1.5,1.2,1.3),
+crateMaterial
+);
+
+box.position.y=0.6;
+
+box.castShadow=true;
+box.receiveShadow=true;
+
+group.add(box);
+
+const stripe=new THREE.Mesh(
+new THREE.BoxGeometry(1.55,0.12,1.35),
+crateDetail
+);
+
+stripe.position.y=0.65;
+
+group.add(stripe);
+
+const lid=new THREE.Mesh(
+new THREE.BoxGeometry(1.55,0.15,1.35),
+crateMaterial
+);
+
+lid.position.y=1.25;
+
+group.add(lid);
+
+group.position.set(x,0,z);
+
+scene.add(group);
+
+crates.push({
+group,
+x,
+z,
+collected:false
+});
+
+}
+
+createCrate(15,20);
+createCrate(-60,90);
+createCrate(190,80);
+createCrate(260,190);
+createCrate(-150,-130);
+createCrate(350,300);
+createCrate(-300,250);
+createCrate(80,-180);
+createCrate(400,-100);
+createCrate(-400,-200);
+
+// ==================================
+// PLAYER VARIABLES
+// ==================================
+
+let moveX=0;
+let moveY=0;
+
+let running=false;
+let crouching=false;
+
+let jumping=false;
+let verticalSpeed=0;
+
+let gaitTime=0;
+let cameraAngle=0;
+
+let equipment=0;
+
+let cameraDistance=8;
+let cameraHeight=4;
+
+const velocity=new THREE.Vector3();
+
+const clock=new THREE.Clock();
+
+// ==================================
 // JOYSTICK
+// ==================================
 
-const joystick = document.getElementById("joystick");
-const stick = document.getElementById("stick");
+const joystick=document.getElementById("joystick");
+const stick=document.getElementById("stick");
 
-let joystickActive = false;
+let joystickActive=false;
 
-joystick.addEventListener("pointerdown", e => {
+joystick.addEventListener("pointerdown",e=>{
 
-    e.preventDefault();
+e.preventDefault();
 
-    joystickActive = true;
+joystickActive=true;
 
-    joystick.setPointerCapture(e.pointerId);
+joystick.setPointerCapture(e.pointerId);
 
-    moveJoystick(e);
+moveJoystick(e);
+
 });
 
-joystick.addEventListener("pointermove", e => {
+joystick.addEventListener("pointermove",e=>{
 
-    if (joystickActive) moveJoystick(e);
+if(joystickActive)moveJoystick(e);
+
 });
 
-function moveJoystick(e) {
+function moveJoystick(e){
 
-    const rect = joystick.getBoundingClientRect();
+const rect=joystick.getBoundingClientRect();
 
-    let x = e.clientX - rect.left - 62.5;
-    let y = e.clientY - rect.top - 62.5;
+let x=e.clientX-rect.left-62.5;
+let y=e.clientY-rect.top-62.5;
 
-    const length = Math.sqrt(x*x + y*y);
+const length=Math.sqrt(x*x+y*y);
 
-    if (length > 40) {
-        x = x / length * 40;
-        y = y / length * 40;
-    }
+if(length>40){
 
-    moveX = x / 40;
-    moveY = y / 40;
+x=x/length*40;
+y=y/length*40;
 
-    stick.style.transform =
-        `translate(${x}px, ${y}px)`;
 }
 
-function stopJoystick() {
+moveX=x/40;
+moveY=y/40;
 
-    joystickActive = false;
+stick.style.transform=`translate(${x}px,${y}px)`;
 
-    moveX = 0;
-    moveY = 0;
-
-    stick.style.transform = "translate(0,0)";
 }
 
-joystick.addEventListener("pointerup", stopJoystick);
-joystick.addEventListener("pointercancel", stopJoystick);
+function stopJoystick(){
 
+joystickActive=false;
+
+moveX=0;
+moveY=0;
+
+stick.style.transform="translate(0,0)";
+
+}
+
+joystick.addEventListener("pointerup",stopJoystick);
+joystick.addEventListener("pointercancel",stopJoystick);
+
+// ==================================
 // CAMERA TOUCH
+// ==================================
 
-let cameraTouch = null;
+let cameraTouch=null;
 
-renderer.domElement.addEventListener("pointerdown", e => {
+renderer.domElement.addEventListener("pointerdown",e=>{
 
-    cameraTouch = {
-        x: e.clientX,
-        y: e.clientY
-    };
+cameraTouch={
+x:e.clientX,
+y:e.clientY
+};
+
 });
 
-renderer.domElement.addEventListener("pointermove", e => {
+renderer.domElement.addEventListener("pointermove",e=>{
 
-    if (!cameraTouch) return;
+if(!cameraTouch)return;
 
-    const dx = e.clientX - cameraTouch.x;
+const dx=e.clientX-cameraTouch.x;
 
-    cameraAngle -= dx * 0.006;
+cameraAngle-=dx*0.006;
 
-    cameraTouch = {
-        x: e.clientX,
-        y: e.clientY
-    };
+cameraTouch={
+x:e.clientX,
+y:e.clientY
+};
+
 });
 
-renderer.domElement.addEventListener("pointerup", () => {
-    cameraTouch = null;
+renderer.domElement.addEventListener("pointerup",()=>{
+cameraTouch=null;
 });
 
-renderer.domElement.addEventListener("pointercancel", () => {
-    cameraTouch = null;
+renderer.domElement.addEventListener("pointercancel",()=>{
+cameraTouch=null;
 });
 
-// RUN
+// ==================================
+// END OF PART ONE
+// ==================================// ==================================
+// RUN BUTTON
+// ==================================
 
-const runButton = document.getElementById("run");
+const runButton=document.getElementById("run");
 
-runButton.addEventListener("pointerdown", e => {
-    e.preventDefault();
-    running = true;
+runButton.addEventListener("pointerdown",e=>{
+e.preventDefault();
+running=true;
 });
 
-function stopRun() {
-    running = false;
+function stopRun(){
+running=false;
 }
 
-runButton.addEventListener("pointerup", stopRun);
-runButton.addEventListener("pointercancel", stopRun);
-runButton.addEventListener("pointerleave", stopRun);
+runButton.addEventListener("pointerup",stopRun);
+runButton.addEventListener("pointercancel",stopRun);
+runButton.addEventListener("pointerleave",stopRun);
+
+// ==================================
+// CROUCH BUTTON
+// ==================================
+
+const crouchButton=document.getElementById("crouch");
+
+crouchButton.addEventListener("pointerdown",e=>{
+e.preventDefault();
+
+crouching=!crouching;
+
+crouchButton.style.background=
+crouching?"#687d39":"#202820dd";
+
+document.getElementById("status").textContent=
+crouching?"CROUCHING":"NORMAL";
+
+});
+
+// ==================================
+// JUMP BUTTON
+// ==================================
+
+document.getElementById("jump").addEventListener(
+"pointerdown",e=>{
+
+e.preventDefault();
+
+if(!jumping&&!crouching){
+
+verticalSpeed=7;
+jumping=true;
+
+}
+
+});
+
+// ==================================
+// COLLISION SYSTEM
+// ==================================
+
+function collides(x,z){
+
+const radius=0.65;
+
+for(const box of colliders){
+
+const closestX=THREE.MathUtils.clamp(
+x,box.x-box.halfX,box.x+box.halfX
+);
+
+const closestZ=THREE.MathUtils.clamp(
+z,box.z-box.halfZ,box.z+box.halfZ
+);
+
+const dx=x-closestX;
+const dz=z-closestZ;
+
+if(dx*dx+dz*dz<radius*radius){
+return true;
+}
+
+}
+
+return false;
+
+}
+
+// ==================================
+// DISTANCE
+// ==================================
+
+function distance(x1,z1,x2,z2){
+
+return Math.sqrt(
+(x1-x2)**2+(z1-z2)**2
+);
+
+}
+
+// ==================================
+// MESSAGE
+// ==================================
+
+let messageTimer=null;
+
+function showMessage(text){
+
+const message=document.getElementById("message");
+
+message.textContent=text;
+
+message.style.display="block";
+
+clearTimeout(messageTimer);
+
+messageTimer=setTimeout(()=>{
+message.style.display="none";
+},2200);
+
+}
+
+// ==================================
+// ENEMY PATROL SYSTEM
+// ==================================
+
+function updateEnemies(delta){
+
+for(const enemy of enemies){
+
+const model=enemy.model;
+
+const dist=distance(
+player.group.position.x,
+player.group.position.z,
+enemy.group?.position?.x ?? enemy.x,
+enemy.group?.position?.z ?? enemy.z
+);
+
+const enemyX=model.group.position.x;
+const enemyZ=model.group.position.z;
+
+const playerX=player.group.position.x;
+const playerZ=player.group.position.z;
+
+const playerDistance=distance(
+playerX,playerZ,enemyX,enemyZ
+);
+
+// ALERT WHEN PLAYER APPROACHES
+
+enemy.alert=playerDistance<25;
+
+let targetX;
+let targetZ;
+
+if(enemy.alert){
+
+// The enemy reacts by moving away from the player.
+
+const dx=enemyX-playerX;
+const dz=enemyZ-playerZ;
+
+const length=Math.max(
+0.001,
+Math.sqrt(dx*dx+dz*dz)
+);
+
+targetX=dx/length;
+targetZ=dz/length;
+
+}else{
+
+// PATROL
+
+enemy.angle+=
+Math.sin(clock.elapsedTime+enemy.phase)*delta*0.35;
+
+targetX=Math.cos(enemy.angle);
+targetZ=Math.sin(enemy.angle);
+
+// Keep the patrol around its starting area.
+
+const homeDistance=distance(
+enemyX,enemyZ,
+enemy.centerX,enemy.centerZ
+);
+
+if(homeDistance>enemy.radius){
+
+targetX=enemy.centerX-enemyX;
+targetZ=enemy.centerZ-enemyZ;
+
+const length=Math.sqrt(
+targetX*targetX+targetZ*targetZ
+);
+
+targetX/=Math.max(length,0.001);
+targetZ/=Math.max(length,0.001);
+
+}
+
+}
+
+// MOVEMENT
+
+const speed=enemy.alert?2.1:enemy.speed;
+
+const nextX=enemyX+targetX*speed*delta;
+const nextZ=enemyZ+targetZ*speed*delta;
+
+if(!collides(nextX,enemyZ)){
+model.group.position.x=nextX;
+}
+
+if(!collides(model.group.position.x,nextZ)){
+model.group.position.z=nextZ;
+}
+
+// ROTATION
+
+if(Math.abs(targetX)+Math.abs(targetZ)>0.01){
+
+model.group.rotation.y=Math.atan2(
+targetX,targetZ
+);
+
+}
+
+// WALK ANIMATION
+
+enemy.phase+=delta*5;
+
+const swing=Math.sin(enemy.phase)*0.35;
+
+model.leftLeg.rotation.x=swing;
+model.rightLeg.rotation.x=-swing;
+
+model.leftArm.rotation.x=-swing*0.6;
+model.rightArm.rotation.x=swing*0.6;
+
+if(enemy.alert){
+model.body.rotation.x=0.06;
+}else{
+model.body.rotation.x=0;
+}
+
+}
+
+}
+
+// ==================================
+// EQUIPMENT COLLECTION
+// ==================================
+
+function updateCrates(){
+
+for(const crate of crates){
+
+if(crate.collected)continue;
+
+const d=distance(
+player.group.position.x,
+player.group.position.z,
+crate.x,
+crate.z
+);
+
+if(d<2.8){
+
+crate.collected=true;
+
+scene.remove(crate.group);
+
+equipment++;
+
+document.getElementById("equipment").textContent=
+equipment;
+
+showMessage("تم جمع صندوق معدات!");
+
+}
+
+}
+
+}
+
+// ==================================
+// CAMERA
+// ==================================
+
+function updateCamera(delta){
+
+const crouchHeight=crouching?1.5:cameraHeight;
+
+const crouchDistance=crouching?6:cameraDistance;
+
+const target=new THREE.Vector3(
+player.group.position.x,
+player.group.position.y+(crouching?1.1:2),
+player.group.position.z
+);
+
+const desired=new THREE.Vector3(
+
+player.group.position.x+
+Math.sin(cameraAngle)*crouchDistance,
+
+player.group.position.y+crouchHeight,
+
+player.group.position.z+
+Math.cos(cameraAngle)*crouchDistance
+
+);
+
+const smooth=1-Math.exp(-6*delta);
+
+camera.position.lerp(desired,smooth);
+
+camera.lookAt(target);
+
+}
+
+// ==================================
+// ANIMATION LOOP
+// ==================================
+
+function animate(){
+
+requestAnimationFrame(animate);
+
+const delta=Math.min(clock.getDelta(),0.04);
+
+const forward=-moveY;
+const sideways=moveX;
+
+const dx=
+sideways*Math.cos(cameraAngle)-
+forward*Math.sin(cameraAngle);
+
+const dz=
+-sideways*Math.sin(cameraAngle)-
+forward*Math.cos(cameraAngle);
+
+// SPEED
+
+const walkSpeed=5;
+const runSpeed=9;
+const crouchSpeed=2.2;
+
+let speed=walkSpeed;
+
+if(running&&!crouching){
+speed=runSpeed;
+}
+
+if(crouching){
+speed=crouchSpeed;
+}
+
+// MOVEMENT
+
+const targetX=dx*speed;
+const targetZ=dz*speed;
+
+const smooth=1-Math.exp(-9*delta);
+
+velocity.x+=(targetX-velocity.x)*smooth;
+velocity.z+=(targetZ-velocity.z)*smooth;
+
+// COLLISION X
+
+const nextX=
+player.group.position.x+velocity.x*delta;
+
+if(!collides(nextX,player.group.position.z)){
+
+player.group.position.x=nextX;
+
+}else{
+
+velocity.x=0;
+
+}
+
+// COLLISION Z
+
+const nextZ=
+player.group.position.z+velocity.z*delta;
+
+if(!collides(player.group.position.x,nextZ)){
+
+player.group.position.z=nextZ;
+
+}else{
+
+velocity.z=0;
+
+}
+
+// WORLD BOUNDS
+
+player.group.position.x=THREE.MathUtils.clamp(
+player.group.position.x,-730,730
+);
+
+player.group.position.z=THREE.MathUtils.clamp(
+player.group.position.z,-730,730
+);
+
+// ROTATION
+
+const currentSpeed=Math.sqrt(
+velocity.x**2+velocity.z**2
+);
+
+const isMoving=currentSpeed>0.3;
+
+if(isMoving){
+
+const targetRotation=Math.atan2(
+velocity.x,velocity.z
+);
+
+let difference=
+targetRotation-player.group.rotation.y;
+
+difference=Math.atan2(
+Math.sin(difference),
+Math.cos(difference)
+);
+
+player.group.rotation.y+=
+difference*Math.min(1,delta*8);
+
+}
+
+// WALK ANIMATION
+
+if(isMoving){
+
+gaitTime+=delta*(running?13:8);
+
+}
+
+const movementAmount=Math.min(
+1,currentSpeed/runSpeed
+);
+
+const swing=isMoving?
+Math.sin(gaitTime)*movementAmount:0;
+
+player.leftLeg.rotation.x=swing*0.65;
+player.rightLeg.rotation.x=-swing*0.65;
+
+player.leftArm.rotation.x=-swing*0.55;
+player.rightArm.rotation.x=swing*0.55;
+
+// CROUCH ANIMATION
+
+const targetBodyHeight=crouching?0.65:1.65;
+
+const targetBodyRotation=crouching?0.35:0;
+
+player.body.position.y+=
+(targetBodyHeight-player.body.position.y)*
+Math.min(1,delta*7);
+
+player.body.rotation.x+=
+(targetBodyRotation-player.body.rotation.x)*
+Math.min(1,delta*7);
 
 // JUMP
 
-document.getElementById("jump").addEventListener(
-    "pointerdown", e => {
+if(jumping){
 
-        e.preventDefault();
+player.group.position.y+=verticalSpeed*delta;
 
-        if (!jumping) {
-            verticalSpeed = 7;
-            jumping = true;
-        }
-    }
-);
+verticalSpeed-=19*delta;
 
-// COLLISION
+if(player.group.position.y<=0){
 
-function collides(x, z) {
+player.group.position.y=0;
 
-    const radius = 0.65;
+verticalSpeed=0;
 
-    for (const box of colliders) {
+jumping=false;
 
-        const closestX = THREE.MathUtils.clamp(
-            x, box.x - box.halfX, box.x + box.halfX
-        );
-
-        const closestZ = THREE.MathUtils.clamp(
-            z, box.z - box.halfZ, box.z + box.halfZ
-        );
-
-        const dx = x - closestX;
-        const dz = z - closestZ;
-
-        if (dx*dx + dz*dz < radius*radius) {
-            return true;
-        }
-    }
-
-    return false;
 }
+
+}
+
+// ENEMY SYSTEM
+
+updateEnemies(delta);
+
+// CRATES
+
+updateCrates();
 
 // CAMERA
 
-function updateCamera(delta) {
+updateCamera(delta);
 
-    const target = new THREE.Vector3(
-        player.position.x,
-        player.position.y + 2,
-        player.position.z
-    );
+// RENDER
 
-    const desired = new THREE.Vector3(
-        player.position.x + Math.sin(cameraAngle) * cameraDistance,
-        player.position.y + cameraHeight,
-        player.position.z + Math.cos(cameraAngle) * cameraDistance
-    );
+renderer.render(scene,camera);
 
-    const smooth = 1 - Math.exp(-8 * delta);
-
-    camera.position.lerp(desired, smooth);
-    camera.lookAt(target);
 }
 
-// ANIMATION
-
-function animate() {
-
-    requestAnimationFrame(animate);
-
-    const delta = Math.min(clock.getDelta(), 0.04);
-
-    const forward = -moveY;
-    const sideways = moveX;
-
-    const dx =
-        sideways * Math.cos(cameraAngle) -
-        forward * Math.sin(cameraAngle);
-
-    const dz =
-        -sideways * Math.sin(cameraAngle) -
-        forward * Math.cos(cameraAngle);
-
-    const walkSpeed = 5;
-    const runSpeed = 9;
-
-    const speed = running ? runSpeed : walkSpeed;
-
-    const targetX = dx * speed;
-    const targetZ = dz * speed;
-
-    const smooth = 1 - Math.exp(-9 * delta);
-
-    velocity.x += (targetX - velocity.x) * smooth;
-    velocity.z += (targetZ - velocity.z) * smooth;
-
-    // COLLISION X
-
-    const nextX = player.position.x + velocity.x * delta;
-
-    if (!collides(nextX, player.position.z)) {
-        player.position.x = nextX;
-    } else {
-        velocity.x = 0;
-    }
-
-    // COLLISION Z
-
-    const nextZ = player.position.z + velocity.z * delta;
-
-    if (!collides(player.position.x, nextZ)) {
-        player.position.z = nextZ;
-    } else {
-        velocity.z = 0;
-    }
-
-    // WORLD BOUNDS
-
-    player.position.x = THREE.MathUtils.clamp(
-        player.position.x, -730, 730
-    );
-
-    player.position.z = THREE.MathUtils.clamp(
-        player.position.z, -730, 730
-    );
-
-    // PLAYER ROTATION
-
-    const currentSpeed = Math.sqrt(
-        velocity.x**2 + velocity.z**2
-    );
-
-    const isMoving = currentSpeed > 0.3;
-
-    if (isMoving) {
-
-        const targetRotation = Math.atan2(
-            velocity.x, velocity.z
-        );
-
-        let difference =
-            targetRotation - player.rotation.y;
-
-        difference = Math.atan2(
-            Math.sin(difference),
-            Math.cos(difference)
-        );
-
-        player.rotation.y +=
-            difference * Math.min(1, delta * 8);
-    }
-
-    // WALK ANIMATION
-
-    if (isMoving) {
-        gaitTime += delta * (running ? 13 : 8);
-    }
-
-    const movementAmount = Math.min(
-        1, currentSpeed / runSpeed
-    );
-
-    const swing = isMoving
-        ? Math.sin(gaitTime) * movementAmount
-        : 0;
-
-    leftLeg.rotation.x = swing * 0.65;
-    rightLeg.rotation.x = -swing * 0.65;
-
-    leftArm.rotation.x = -swing * 0.55;
-    rightArm.rotation.x = swing * 0.55;
-
-    // BODY BOB
-
-    const bob = isMoving
-        ? Math.abs(Math.sin(gaitTime * 2)) * 0.07 * movementAmount
-        : 0;
-
-    soldier.position.y = bob;
-
-    const targetLean = running && isMoving ? 0.09 : 0;
-
-    body.rotation.x +=
-        (targetLean - body.rotation.x) * smooth;
-
-    // JUMP
-
-    if (jumping) {
-
-        player.position.y += verticalSpeed * delta;
-
-        verticalSpeed -= 19 * delta;
-
-        if (player.position.y <= 0) {
-
-            player.position.y = 0;
-            verticalSpeed = 0;
-            jumping = false;
-        }
-    }
-
-    // CAMERA
-
-    updateCamera(delta);
-
-    renderer.render(scene, camera);
-}
-
+// ==================================
 // INITIAL CAMERA
+// ==================================
 
-camera.position.set(0, 4, 8);
-camera.lookAt(0, 2, 0);
+camera.position.set(0,4,8);
+
+camera.lookAt(0,2,0);
+
+// ==================================
+// RESIZE
+// ==================================
+
+addEventListener("resize",()=>{
+
+camera.aspect=innerWidth/innerHeight;
+
+camera.updateProjectionMatrix();
+
+renderer.setSize(innerWidth,innerHeight);
+
+renderer.setPixelRatio(
+Math.min(devicePixelRatio,1.5)
+);
+
+});
+
+// ==================================
+// START GAME
+// ==================================
 
 animate();
 
-// RESIZE
+showMessage("WELCOME TO HWTA DESERT WORLD V4");
 
-addEventListener("resize", () => {
+</script>
 
-    camera.aspect = innerWidth / innerHeight;
-    camera.updateProjectionMatrix();
-
-    renderer.setSize(innerWidth, innerHeight);
-    renderer.setPixelRatio(Math.min(devicePixelRatio, 1.5));
-});
-
-</script></body>
-    </html>
+</body>
+</html>
