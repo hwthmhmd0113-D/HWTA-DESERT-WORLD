@@ -3,9 +3,11 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
 <title>HWTA DESERT WORLD</title>
 
 <style>
+
 * {
     margin: 0;
     padding: 0;
@@ -96,12 +98,14 @@ canvas {
     text-shadow: 1px 1px 3px black;
     white-space: nowrap;
 }
+
 </style>
 </head>
 
 <body>
 
 <div id="title">HWTA DESERT WORLD</div>
+
 <div id="info">DESERT REGION | 1500 × 1500</div>
 
 <div id="joystick">
@@ -118,14 +122,25 @@ canvas {
 import * as THREE from
 'https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js';
 
+
+// ======================================
 // SCENE
+// ======================================
 
 const scene = new THREE.Scene();
 
 scene.background = new THREE.Color(0x87b9d5);
-scene.fog = new THREE.Fog(0xc9aa79, 180, 1000);
 
+scene.fog = new THREE.Fog(
+    0xc9aa79,
+    180,
+    1000
+);
+
+
+// ======================================
 // CAMERA
+// ======================================
 
 const camera = new THREE.PerspectiveCamera(
     65,
@@ -134,30 +149,55 @@ const camera = new THREE.PerspectiveCamera(
     2000
 );
 
+
+// ======================================
 // RENDERER
+// ======================================
 
 const renderer = new THREE.WebGLRenderer({
     antialias: false,
     powerPreference: "high-performance"
 });
 
-renderer.setSize(window.innerWidth, window.innerHeight);
-renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
+renderer.setSize(
+    window.innerWidth,
+    window.innerHeight
+);
+
+renderer.setPixelRatio(
+    Math.min(window.devicePixelRatio, 1.5)
+);
+
 renderer.shadowMap.enabled = false;
 
 document.body.appendChild(renderer.domElement);
 
-// LIGHT
 
-const sun = new THREE.DirectionalLight(0xffffff, 2);
+// ======================================
+// LIGHT
+// ======================================
+
+const sun = new THREE.DirectionalLight(
+    0xffffff,
+    2
+);
+
 sun.position.set(100, 200, 100);
+
 scene.add(sun);
 
-scene.add(new THREE.HemisphereLight(
-    0xffffff, 0x8b6945, 1.5
-));
+scene.add(
+    new THREE.HemisphereLight(
+        0xffffff,
+        0x8b6945,
+        1.5
+    )
+);
 
+
+// ======================================
 // MATERIALS
+// ======================================
 
 const sand = new THREE.MeshLambertMaterial({
     color: 0xc9a66b
@@ -171,7 +211,10 @@ const darkMat = new THREE.MeshLambertMaterial({
     color: 0x4b5149
 });
 
+
+// ======================================
 // GROUND
+// ======================================
 
 const ground = new THREE.Mesh(
     new THREE.PlaneGeometry(1500, 1500),
@@ -179,27 +222,39 @@ const ground = new THREE.Mesh(
 );
 
 ground.rotation.x = -Math.PI / 2;
+
 ground.position.y = -0.2;
+
 scene.add(ground);
 
+
+// ======================================
 // MOUNTAINS
+// ======================================
 
 function mountain(x, z, size, height) {
 
     const mesh = new THREE.Mesh(
         new THREE.ConeGeometry(size, height, 5),
+
         new THREE.MeshLambertMaterial({
             color: 0x9c805e
         })
     );
 
-    mesh.position.set(x, height / 2 - 3, z);
+    mesh.position.set(
+        x,
+        height / 2 - 3,
+        z
+    );
+
     scene.add(mesh);
 }
 
 for (let i = 0; i < 25; i++) {
 
     const x = (Math.random() - 0.5) * 1300;
+
     const z = (Math.random() - 0.5) * 1300;
 
     mountain(
@@ -210,7 +265,10 @@ for (let i = 0; i < 25; i++) {
     );
 }
 
+
+// ======================================
 // DUNES
+// ======================================
 
 for (let i = 0; i < 80; i++) {
 
@@ -234,7 +292,10 @@ for (let i = 0; i < 80; i++) {
     scene.add(dune);
 }
 
-// BUILDING FUNCTION
+
+// ======================================
+// BUILDINGS
+// ======================================
 
 function building(x, z, width, height, depth, material) {
 
@@ -243,21 +304,31 @@ function building(x, z, width, height, depth, material) {
         material
     );
 
-    house.position.set(x, height / 2, z);
+    house.position.set(
+        x,
+        height / 2,
+        z
+    );
+
     scene.add(house);
 
     return house;
 }
 
-// SUDANESE VILLAGE
+
+// ======================================
+// VILLAGE
+// ======================================
 
 for (let i = 0; i < 12; i++) {
 
     const x = -160 + Math.random() * 320;
+
     const z = -180 + Math.random() * 320;
 
     building(
-        x, z,
+        x,
+        z,
         12 + Math.random() * 10,
         8 + Math.random() * 3,
         12 + Math.random() * 10,
@@ -265,17 +336,29 @@ for (let i = 0; i < 12; i++) {
     );
 }
 
-// MILITARY BASE BUILDINGS
+
+// ======================================
+// MILITARY BASE
+// ======================================
 
 building(220, 150, 35, 12, 30, darkMat);
+
 building(270, 150, 20, 8, 20, wallMat);
+
 building(220, 210, 15, 18, 15, darkMat);
 
+
+// ======================================
 // WATCH TOWER
+// ======================================
 
 function tower(x, z) {
 
-    building(x, z, 4, 18, 4, darkMat);
+    building(
+        x, z,
+        4, 18, 4,
+        darkMat
+    );
 
     const top = new THREE.Mesh(
         new THREE.BoxGeometry(10, 3, 10),
@@ -283,101 +366,364 @@ function tower(x, z) {
     );
 
     top.position.set(x, 19, z);
+
     scene.add(top);
 }
 
 tower(180, 150);
+
 tower(300, 150);
 
+
+// ======================================
 // PLAYER
+// ======================================
 
 const player = new THREE.Group();
 
 scene.add(player);
 
-// BODY
 
-const body = new THREE.Mesh(
-    new THREE.BoxGeometry(1.5, 2, 0.8),
-    new THREE.MeshLambertMaterial({
-        color: 0x586247
-    })
+// MAIN SOLDIER GROUP
+
+const soldier = new THREE.Group();
+
+player.add(soldier);
+
+
+// ======================================
+// SOLDIER MATERIALS
+// ======================================
+
+const uniformMat = new THREE.MeshLambertMaterial({
+    color: 0x46563a
+});
+
+const darkUniform = new THREE.MeshLambertMaterial({
+    color: 0x303c2d
+});
+
+const skinMat = new THREE.MeshLambertMaterial({
+    color: 0x987052
+});
+
+const helmetMat = new THREE.MeshLambertMaterial({
+    color: 0x465239
+});
+
+const blackMat = new THREE.MeshLambertMaterial({
+    color: 0x20231e
+});
+
+
+// ======================================
+// UPPER BODY
+// ======================================
+
+const upperBody = new THREE.Group();
+
+upperBody.position.y = 1.65;
+
+soldier.add(upperBody);
+
+
+// TORSO
+
+const torso = new THREE.Mesh(
+    new THREE.BoxGeometry(1.15, 1.35, 0.65),
+    uniformMat
 );
 
-body.position.y = 2.1;
-player.add(body);
+torso.position.y = 0.7;
+
+upperBody.add(torso);
+
+
+// NECK
+
+const neck = new THREE.Mesh(
+    new THREE.CylinderGeometry(0.12, 0.14, 0.2, 10),
+    skinMat
+);
+
+neck.position.y = 1.35;
+
+upperBody.add(neck);
+
 
 // HEAD
 
 const head = new THREE.Mesh(
-    new THREE.SphereGeometry(0.48, 12, 12),
-    new THREE.MeshLambertMaterial({
-        color: 0xb98c68
-    })
+    new THREE.SphereGeometry(0.34, 16, 12),
+    skinMat
 );
 
-head.position.y = 3.5;
-player.add(head);
+head.position.y = 1.65;
+
+upperBody.add(head);
+
 
 // HELMET
 
 const helmet = new THREE.Mesh(
-    new THREE.SphereGeometry(0.53, 12, 8),
-    new THREE.MeshLambertMaterial({
-        color: 0x555b3c
-    })
+    new THREE.SphereGeometry(0.39, 16, 10),
+    helmetMat
 );
 
-helmet.scale.y = 0.55;
-helmet.position.y = 3.85;
-player.add(helmet);
+helmet.scale.set(1.1, 0.65, 1.1);
 
+helmet.position.y = 1.93;
+
+upperBody.add(helmet);
+
+
+// ======================================
+// BACKPACK
+// ======================================
+
+const backpack = new THREE.Mesh(
+    new THREE.BoxGeometry(0.85, 1.05, 0.35),
+    darkUniform
+);
+
+backpack.position.set(
+    0,
+    0.7,
+    -0.48
+);
+
+upperBody.add(backpack);
+
+
+// BACKPACK POCKETS
+
+for (let y of [0.45, 0.8, 1.05]) {
+
+    const pocket = new THREE.Mesh(
+        new THREE.BoxGeometry(0.65, 0.18, 0.1),
+        uniformMat
+    );
+
+    pocket.position.set(
+        0,
+        y,
+        -0.69
+    );
+
+    upperBody.add(pocket);
+}
+
+
+// ======================================
+// TACTICAL VEST
+// ======================================
+
+const vest = new THREE.Mesh(
+    new THREE.BoxGeometry(1.22, 0.85, 0.72),
+    darkUniform
+);
+
+vest.position.set(
+    0,
+    0.7,
+    0.05
+);
+
+upperBody.add(vest);
+
+
+// VEST POCKETS
+
+for (let x of [-0.36, 0, 0.36]) {
+
+    const pocket = new THREE.Mesh(
+        new THREE.BoxGeometry(0.25, 0.28, 0.12),
+        uniformMat
+    );
+
+    pocket.position.set(
+        x,
+        0.8,
+        0.43
+    );
+
+    upperBody.add(pocket);
+}
+
+
+// ======================================
+// BELT
+// ======================================
+
+const belt = new THREE.Mesh(
+    new THREE.BoxGeometry(1.05, 0.16, 0.7),
+    blackMat
+);
+
+belt.position.y = 0.05;
+
+upperBody.add(belt);
+
+
+// ======================================
+// LIMB FUNCTION
+// ======================================
+
+function createLimb(radius, length, material) {
+
+    const pivot = new THREE.Group();
+
+    const mesh = new THREE.Mesh(
+        new THREE.CapsuleGeometry(
+            radius,
+            length,
+            4,
+            8
+        ),
+        material
+    );
+
+    mesh.position.y = -length / 2 - radius;
+
+    pivot.add(mesh);
+
+    return pivot;
+}
+
+
+// ======================================
 // LEGS
+// ======================================
 
-const legMat = new THREE.MeshLambertMaterial({
-    color: 0x424a37
-});
+const leftLeg = new THREE.Group();
 
-for (let i = -1; i <= 1; i += 2) {
+const rightLeg = new THREE.Group();
 
-    const leg = new THREE.Mesh(
-        new THREE.BoxGeometry(0.55, 1.4, 0.6),
-        legMat
+leftLeg.position.set(-0.32, 1.65, 0);
+
+rightLeg.position.set(0.32, 1.65, 0);
+
+soldier.add(leftLeg, rightLeg);
+
+
+// THIGHS
+
+leftLeg.add(
+    createLimb(0.24, 0.65, uniformMat)
+);
+
+rightLeg.add(
+    createLimb(0.24, 0.65, uniformMat)
+);
+
+
+// BOOTS
+
+function createBoot(parent) {
+
+    const boot = new THREE.Mesh(
+        new THREE.BoxGeometry(
+            0.42,
+            0.38,
+            0.65
+        ),
+        blackMat
     );
 
-    leg.position.set(i * 0.4, 0.7, 0);
-    player.add(leg);
+    boot.position.set(
+        0,
+        -1.18,
+        0.16
+    );
+
+    parent.add(boot);
 }
 
+createBoot(leftLeg);
+
+createBoot(rightLeg);
+
+
+// ======================================
 // ARMS
+// ======================================
 
-for (let i = -1; i <= 1; i += 2) {
+const leftArm = new THREE.Group();
 
-    const arm = new THREE.Mesh(
-        new THREE.BoxGeometry(0.45, 1.5, 0.5),
-        wallMat
+const rightArm = new THREE.Group();
+
+leftArm.position.set(
+    -0.72,
+    2.85,
+    0
+);
+
+rightArm.position.set(
+    0.72,
+    2.85,
+    0
+);
+
+soldier.add(leftArm, rightArm);
+
+
+// ARM MODELS
+
+leftArm.add(
+    createLimb(0.19, 0.75, uniformMat)
+);
+
+rightArm.add(
+    createLimb(0.19, 0.75, uniformMat)
+);
+
+
+// HANDS
+
+function createHand(parent) {
+
+    const hand = new THREE.Mesh(
+        new THREE.SphereGeometry(0.16, 10, 8),
+        blackMat
     );
 
-    arm.position.set(i * 1, 2.1, 0);
-    player.add(arm);
+    hand.position.y = -1.02;
+
+    parent.add(hand);
 }
 
+createHand(leftArm);
+
+createHand(rightArm);
+
+
+// ======================================
 // PLAYER POSITION
+// ======================================
 
 player.position.set(0, 0, 0);
 
+
+// ======================================
 // CAMERA SETTINGS
+// ======================================
 
 let cameraAngle = 0;
+
 let cameraHeight = 5;
+
 let cameraDistance = 9;
 
 function updateCamera() {
 
     camera.position.set(
-        player.position.x + Math.sin(cameraAngle) * cameraDistance,
+        player.position.x +
+        Math.sin(cameraAngle) * cameraDistance,
+
         player.position.y + cameraHeight,
-        player.position.z + Math.cos(cameraAngle) * cameraDistance
+
+        player.position.z +
+        Math.cos(cameraAngle) * cameraDistance
     );
 
     camera.lookAt(
@@ -387,67 +733,102 @@ function updateCamera() {
     );
 }
 
+
+// ======================================
 // JOYSTICK
+// ======================================
 
 const joystick = document.getElementById("joystick");
+
 const stick = document.getElementById("stick");
 
 let moveX = 0;
+
 let moveY = 0;
+
 let joystickActive = false;
 
+
 joystick.addEventListener("pointerdown", e => {
+
     joystickActive = true;
+
     joystick.setPointerCapture(e.pointerId);
+
     moveJoystick(e);
 });
 
+
 joystick.addEventListener("pointermove", e => {
-    if (joystickActive) moveJoystick(e);
+
+    if (joystickActive) {
+
+        moveJoystick(e);
+
+    }
 });
+
 
 function moveJoystick(e) {
 
     const rect = joystick.getBoundingClientRect();
 
     let x = e.clientX - rect.left - 62.5;
+
     let y = e.clientY - rect.top - 62.5;
 
     const length = Math.sqrt(x*x + y*y);
 
     if (length > 40) {
+
         x = x / length * 40;
+
         y = y / length * 40;
+
     }
 
     moveX = x / 40;
+
     moveY = y / 40;
 
     stick.style.transform =
         `translate(${x}px, ${y}px)`;
 }
 
+
 function stopJoystick() {
 
     joystickActive = false;
+
     moveX = 0;
+
     moveY = 0;
-    stick.style.transform = "translate(0px, 0px)";
+
+    stick.style.transform =
+        "translate(0px, 0px)";
 }
 
+
 joystick.addEventListener("pointerup", stopJoystick);
+
 joystick.addEventListener("pointercancel", stopJoystick);
 
+
+// ======================================
 // CAMERA TOUCH
+// ======================================
 
 let cameraTouch = null;
 
 renderer.domElement.addEventListener("pointerdown", e => {
+
     cameraTouch = {
         x: e.clientX,
         y: e.clientY
     };
+
 });
+
 
 renderer.domElement.addEventListener("pointermove", e => {
 
@@ -461,124 +842,366 @@ renderer.domElement.addEventListener("pointermove", e => {
         x: e.clientX,
         y: e.clientY
     };
+
 });
+
 
 renderer.domElement.addEventListener("pointerup", () => {
+
     cameraTouch = null;
+
 });
 
+renderer.domElement.addEventListener("pointercancel", () => {
+
+    cameraTouch = null;
+
+});
+
+
+// ======================================
 // RUN BUTTON
+// ======================================
 
 let running = false;
 
 const runButton = document.getElementById("run");
 
-runButton.addEventListener("pointerdown", () => {
+
+runButton.addEventListener("pointerdown", e => {
+
     running = true;
+
 });
 
+
 function stopRun() {
+
     running = false;
+
 }
 
+
 runButton.addEventListener("pointerup", stopRun);
+
 runButton.addEventListener("pointercancel", stopRun);
+
 runButton.addEventListener("pointerleave", stopRun);
 
+
+// ======================================
 // JUMP
+// ======================================
 
 let verticalSpeed = 0;
+
 let jumping = false;
 
+
 document.getElementById("jump").addEventListener(
-    "pointerdown", () => {
+    "pointerdown",
+    () => {
 
         if (!jumping) {
+
             verticalSpeed = 8;
+
             jumping = true;
+
         }
+
     }
 );
 
-// ANIMATION
+
+// ======================================
+// REALISTIC MOVEMENT SYSTEM
+// ======================================
 
 const clock = new THREE.Clock();
+
+let gaitTime = 0;
+
+let currentSpeed = 0;
+
+const moveVelocity = new THREE.Vector3();
+
+
+// ======================================
+// ANIMATION LOOP
+// ======================================
 
 function animate() {
 
     requestAnimationFrame(animate);
 
-    const delta = Math.min(clock.getDelta(), 0.05);
+    const delta = Math.min(
+        clock.getDelta(),
+        0.05
+    );
 
-    const speed = running ? 18 : 8;
+
+    // INPUT
+
+    const inputLength = Math.min(
+        1,
+        Math.sqrt(
+            moveX * moveX +
+            moveY * moveY
+        )
+    );
+
 
     const forward = moveY;
+
     const sideways = moveX;
+
 
     const dx =
         sideways * Math.cos(cameraAngle) -
         forward * Math.sin(cameraAngle);
 
+
     const dz =
         -sideways * Math.sin(cameraAngle) -
         forward * Math.cos(cameraAngle);
 
-    const length = Math.sqrt(dx*dx + dz*dz);
 
-    if (length > 0.1) {
+    // SPEED
 
-        player.position.x += dx / length * speed * delta;
-        player.position.z += dz / length * speed * delta;
+    const walkSpeed = 7;
 
-        player.rotation.y = Math.atan2(dx, dz);
+    const runSpeed = 13;
+
+    const targetSpeed = running
+        ? runSpeed
+        : walkSpeed;
+
+
+    const targetX = inputLength > 0.05
+        ? dx / inputLength * targetSpeed * inputLength
+        : 0;
+
+
+    const targetZ = inputLength > 0.05
+        ? dz / inputLength * targetSpeed * inputLength
+        : 0;
+
+
+    // SMOOTH ACCELERATION
+
+    const smooth = 1 - Math.exp(-9 * delta);
+
+
+    moveVelocity.x +=
+        (targetX - moveVelocity.x) * smooth;
+
+
+    moveVelocity.z +=
+        (targetZ - moveVelocity.z) * smooth;
+
+
+    // PLAYER MOVEMENT
+
+    player.position.x +=
+        moveVelocity.x * delta;
+
+
+    player.position.z +=
+        moveVelocity.z * delta;
+
+
+    currentSpeed = Math.sqrt(
+        moveVelocity.x ** 2 +
+        moveVelocity.z ** 2
+    );
+
+
+    // PLAYER ROTATION
+
+    if (currentSpeed > 0.5) {
+
+        const targetRotation = Math.atan2(
+            moveVelocity.x,
+            moveVelocity.z
+        );
+
+
+        let difference =
+            targetRotation - player.rotation.y;
+
+
+        difference = Math.atan2(
+            Math.sin(difference),
+            Math.cos(difference)
+        );
+
+
+        player.rotation.y +=
+            difference * Math.min(1, delta * 8);
+
     }
+
+
+    // MOVEMENT AMOUNT
+
+    const movementAmount = Math.min(
+        1,
+        currentSpeed / runSpeed
+    );
+
+
+    const isMoving = currentSpeed > 0.4;
+
+
+    // GAIT
+
+    if (isMoving) {
+
+        gaitTime += delta * (
+            running ? 13 : 8
+        );
+
+    }
+
+
+    // LEG ANIMATION
+
+    const swing = isMoving
+        ? Math.sin(gaitTime) * movementAmount
+        : 0;
+
+
+    leftLeg.rotation.x =
+        swing * 0.65;
+
+
+    rightLeg.rotation.x =
+        -swing * 0.65;
+
+
+    // ARM ANIMATION
+
+    leftArm.rotation.x =
+        -swing * 0.45;
+
+
+    rightArm.rotation.x =
+        swing * 0.45;
+
+
+    // BODY BOBBING
+
+    const bob = isMoving
+
+        ? Math.abs(
+            Math.sin(gaitTime * 2)
+          ) * 0.09 * movementAmount
+
+        : Math.sin(
+            clock.elapsedTime * 2
+          ) * 0.015;
+
+
+    soldier.position.y = bob;
+
+
+    // BODY LEAN
+
+    const targetLean =
+        running && isMoving ? 0.09 : 0.025;
+
+
+    upperBody.rotation.x +=
+        (targetLean - upperBody.rotation.x) * smooth;
+
+
+    // JUMP ANIMATION
+
+    if (jumping) {
+
+        player.position.y +=
+            verticalSpeed * delta;
+
+
+        verticalSpeed -=
+            20 * delta;
+
+
+        if (player.position.y <= 0) {
+
+            player.position.y = 0;
+
+            verticalSpeed = 0;
+
+            jumping = false;
+
+        }
+
+    }
+
 
     // WORLD BOUNDARIES
 
     player.position.x = THREE.MathUtils.clamp(
-        player.position.x, -730, 730
+        player.position.x,
+        -730,
+        730
     );
+
 
     player.position.z = THREE.MathUtils.clamp(
-        player.position.z, -730, 730
+        player.position.z,
+        -730,
+        730
     );
 
-    // JUMP PHYSICS
 
-    if (jumping) {
-
-        player.position.y += verticalSpeed * delta;
-
-        verticalSpeed -= 20 * delta;
-
-        if (player.position.y <= 0) {
-            player.position.y = 0;
-            verticalSpeed = 0;
-            jumping = false;
-        }
-    }
+    // CAMERA
 
     updateCamera();
 
-    renderer.render(scene, camera);
+
+    // RENDER
+
+    renderer.render(
+        scene,
+        camera
+    );
+
 }
 
+
+// ======================================
+// START GAME
+// ======================================
+
 updateCamera();
+
 animate();
 
+
+// ======================================
 // RESIZE
+// ======================================
 
 window.addEventListener("resize", () => {
 
-    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.aspect =
+        window.innerWidth / window.innerHeight;
+
+
     camera.updateProjectionMatrix();
+
 
     renderer.setSize(
         window.innerWidth,
         window.innerHeight
     );
+
 });
 
 </script>
+
 </body>
-  </html>
+    </html>
