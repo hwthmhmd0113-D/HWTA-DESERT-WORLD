@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<title>HWTA DESERT WORLD</title>
+
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    touch-action: none;
+}
+
+body {
+    overflow: hidden;
+    background: #c9a66b;
+    font-family: Arial, sans-serif;
+}
+
+canvas {
+    display: block;
+}
+
+#title {
+    position: absolute;
+    top: 15px;
+    left: 50%;
+    transform: translateX(-50%);
+    color: white;
+    font-size: 19px;
+    font-weight: bold;
+    text-shadow: 2px 2px 4px black;
+    white-space: nowrap;
+}
+
+#info {
+    position: absolute;
+    top: 48px;
+    left: 12px;
+    color: white;
+    font-size: 12px;
+    text-shadow: 1px 1px 3px black;
+}
+
+#joystick {
+    position: absolute;
+    bottom: 35px;
+    left: 25px;
+    width: 125px;
+    height: 125px;
+    border-radius: 50%;
+    background: #ffffff33;
+    border: 2px solid #ffffff88;
+}
+
+#stick {
+    position: absolute;
+    width: 55px;
+    height: 55px;
+    left: 33px;
+    top: 33px;
+    border-radius: 50%;
+    background: #ffffffbb;
+}
+
+.btn {
+    position: absolute;
+    right: 25px;
+    width: 65px;
+    height: 65px;
+    border-radius: 50%;
+    border: 2px solid white;
+    background: #33333399;
+    color: white;
+    font-weight: bold;
+    font-size: 12px;
+}
+
+#jump {
+    bottom: 115px;
+}
+
+#run {
+    bottom: 35px;
+}
+
+#help {
+    position: absolute;
+    bottom: 12px;
+    left: 50%;
+    transform: translateX(-50%);
+    color: white;
+    font-size: 10px;
+    text-shadow: 1px 1px 3px black;
+    white-space: nowrap;
+}
+</style>
+</head>
+
+<body>
+
+<div id="title">HWTA DESERT WORLD</div>
+<div id="info">DESERT REGION | 1500 × 1500</div>
+
+<div id="joystick">
+    <div id="stick"></div>
+</div>
+
+<button class="btn" id="jump">JUMP</button>
+<button class="btn" id="run">RUN</button>
+
+<div id="help">اسحب الشاشة لتحريك الكاميرا</div>
+
+<script type="module">
+
+import * as THREE from
+'https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js';
+
+// SCENE
+
+const scene = new THREE.Scene();
+
+scene.background = new THREE.Color(0x87b9d5);
+scene.fog = new THREE.Fog(0xc9aa79, 180, 1000);
+
+// CAMERA
+
+const camera = new THREE.PerspectiveCamera(
+    65,
+    window.innerWidth / window.innerHeight,
+    0.1,
+    2000
+);
+
+// RENDERER
+
+const renderer = new THREE.WebGLRenderer({
+    antialias: false,
+    powerPreference: "high-performance"
+});
+
+renderer.setSize(window.innerWidth, window.innerHeight);
+renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
+renderer.shadowMap.enabled = false;
+
+document.body.appendChild(renderer.domElement);
+
+// LIGHT
+
+const sun = new THREE.DirectionalLight(0xffffff, 2);
+sun.position.set(100, 200, 100);
+scene.add(sun);
+
+scene.add(new THREE.HemisphereLight(
+    0xffffff, 0x8b6945, 1.5
+));
+
+// MATERIALS
+
+const sand = new THREE.MeshLambertMaterial({
+    color: 0xc9a66b
+});
+
+const wallMat = new THREE.MeshLambertMaterial({
+    color: 0xb68a60
+});
+
+const darkMat = new THREE.MeshLambertMaterial({
+    color: 0x4b5149
+});
+
+// GROUND
+
+const ground = new THREE.Mesh(
+    new THREE.PlaneGeometry(1500, 1500),
+    sand
+);
+
+ground.rotation.x = -Math.PI / 2;
+ground.position.y = -0.2;
+scene.add(ground);
+
+// MOUNTAINS
+
+function mountain(x, z, size, height) {
+
+    const mesh = new THREE.Mesh(
+        new THREE.ConeGeometry(size, height, 5),
+        new THREE.MeshLambertMaterial({
+            color: 0x9c805e
+        })
+    );
+
+    mesh.position.set(x, height / 2 - 3, z);
+    scene.add(mesh);
+}
+
+for (let i = 0; i < 25; i++) {
+
+    const x = (Math.random() - 0.5) * 1300;
+    const z = (Math.random() - 0.5) * 1300;
+
+    mountain(
+        x,
+        z,
+        40 + Math.random() * 70,
+        70 + Math.random() * 100
+    );
+}
+
+// DUNES
+
+for (let i = 0; i < 80; i++) {
+
+    const dune = new THREE.Mesh(
+        new THREE.SphereGeometry(1, 8, 6),
+        sand
+    );
+
+    dune.scale.set(
+        35 + Math.random() * 50,
+        5 + Math.random() * 9,
+        25 + Math.random() * 40
+    );
+
+    dune.position.set(
+        (Math.random() - 0.5) * 1300,
+        -3,
+        (Math.random() - 0.5) * 1300
+    );
+
+    scene.add(dune);
+}
+
+// BUILDING FUNCTION
+
+function building(x, z, width, height, depth, material) {
+
+    const house = new THREE.Mesh(
+        new THREE.BoxGeometry(width, height, depth),
+        material
+    );
+
+    house.position.set(x, height / 2, z);
+    scene.add(house);
+
+    return house;
+}
+
+// SUDANESE VILLAGE
+
+for (let i = 0; i < 12; i++) {
+
+    const x = -160 + Math.random() * 320;
+    const z = -180 + Math.random() * 320;
+
+    building(
+        x, z,
+        12 + Math.random() * 10,
+        8 + Math.random() * 3,
+        12 + Math.random() * 10,
+        wallMat
+    );
+}
+
+// MILITARY BASE BUILDINGS
+
+building(220, 150, 35, 12, 30, darkMat);
+building(270, 150, 20, 8, 20, wallMat);
+building(220, 210, 15, 18, 15, darkMat);
+
+// WATCH TOWER
+
+function tower(x, z) {
+
+    building(x, z, 4, 18, 4, darkMat);
+
+    const top = new THREE.Mesh(
+        new THREE.BoxGeometry(10, 3, 10),
+        wallMat
+    );
+
+    top.position.set(x, 19, z);
+    scene.add(top);
+}
+
+tower(180, 150);
+tower(300, 150);
+
+// PLAYER
+
+const player = new THREE.Group();
+
+scene.add(player);
+
+// BODY
+
+const body = new THREE.Mesh(
+    new THREE.BoxGeometry(1.5, 2, 0.8),
+    new THREE.MeshLambertMaterial({
+        color: 0x586247
+    })
+);
+
+body.position.y = 2.1;
+player.add(body);
+
+// HEAD
+
+const head = new THREE.Mesh(
+    new THREE.SphereGeometry(0.48, 12, 12),
+    new THREE.MeshLambertMaterial({
+        color: 0xb98c68
+    })
+);
+
+head.position.y = 3.5;
+player.add(head);
+
+// HELMET
+
+const helmet = new THREE.Mesh(
+    new THREE.SphereGeometry(0.53, 12, 8),
+    new THREE.MeshLambertMaterial({
+        color: 0x555b3c
+    })
+);
+
+helmet.scale.y = 0.55;
+helmet.position.y = 3.85;
+player.add(helmet);
+
+// LEGS
+
+const legMat = new THREE.MeshLambertMaterial({
+    color: 0x424a37
+});
+
+for (let i = -1; i <= 1; i += 2) {
+
+    const leg = new THREE.Mesh(
+        new THREE.BoxGeometry(0.55, 1.4, 0.6),
+        legMat
+    );
+
+    leg.position.set(i * 0.4, 0.7, 0);
+    player.add(leg);
+}
+
+// ARMS
+
+for (let i = -1; i <= 1; i += 2) {
+
+    const arm = new THREE.Mesh(
+        new THREE.BoxGeometry(0.45, 1.5, 0.5),
+        wallMat
+    );
+
+    arm.position.set(i * 1, 2.1, 0);
+    player.add(arm);
+}
+
+// PLAYER POSITION
+
+player.position.set(0, 0, 0);
+
+// CAMERA SETTINGS
+
+let cameraAngle = 0;
+let cameraHeight = 5;
+let cameraDistance = 9;
+
+function updateCamera() {
+
+    camera.position.set(
+        player.position.x + Math.sin(cameraAngle) * cameraDistance,
+        player.position.y + cameraHeight,
+        player.position.z + Math.cos(cameraAngle) * cameraDistance
+    );
+
+    camera.lookAt(
+        player.position.x,
+        player.position.y + 2,
+        player.position.z
+    );
+}
+
+// JOYSTICK
+
+const joystick = document.getElementById("joystick");
+const stick = document.getElementById("stick");
+
+let moveX = 0;
+let moveY = 0;
+let joystickActive = false;
+
+joystick.addEventListener("pointerdown", e => {
+    joystickActive = true;
+    joystick.setPointerCapture(e.pointerId);
+    moveJoystick(e);
+});
+
+joystick.addEventListener("pointermove", e => {
+    if (joystickActive) moveJoystick(e);
+});
+
+function moveJoystick(e) {
+
+    const rect = joystick.getBoundingClientRect();
+
+    let x = e.clientX - rect.left - 62.5;
+    let y = e.clientY - rect.top - 62.5;
+
+    const length = Math.sqrt(x*x + y*y);
+
+    if (length > 40) {
+        x = x / length * 40;
+        y = y / length * 40;
+    }
+
+    moveX = x / 40;
+    moveY = y / 40;
+
+    stick.style.transform =
+        `translate(${x}px, ${y}px)`;
+}
+
+function stopJoystick() {
+
+    joystickActive = false;
+    moveX = 0;
+    moveY = 0;
+    stick.style.transform = "translate(0px, 0px)";
+}
+
+joystick.addEventListener("pointerup", stopJoystick);
+joystick.addEventListener("pointercancel", stopJoystick);
+
+// CAMERA TOUCH
+
+let cameraTouch = null;
+
+renderer.domElement.addEventListener("pointerdown", e => {
+    cameraTouch = {
+        x: e.clientX,
+        y: e.clientY
+    };
+});
+
+renderer.domElement.addEventListener("pointermove", e => {
+
+    if (!cameraTouch) return;
+
+    const dx = e.clientX - cameraTouch.x;
+
+    cameraAngle -= dx * 0.006;
+
+    cameraTouch = {
+        x: e.clientX,
+        y: e.clientY
+    };
+});
+
+renderer.domElement.addEventListener("pointerup", () => {
+    cameraTouch = null;
+});
+
+// RUN BUTTON
+
+let running = false;
+
+const runButton = document.getElementById("run");
+
+runButton.addEventListener("pointerdown", () => {
+    running = true;
+});
+
+function stopRun() {
+    running = false;
+}
+
+runButton.addEventListener("pointerup", stopRun);
+runButton.addEventListener("pointercancel", stopRun);
+runButton.addEventListener("pointerleave", stopRun);
+
+// JUMP
+
+let verticalSpeed = 0;
+let jumping = false;
+
+document.getElementById("jump").addEventListener(
+    "pointerdown", () => {
+
+        if (!jumping) {
+            verticalSpeed = 8;
+            jumping = true;
+        }
+    }
+);
+
+// ANIMATION
+
+const clock = new THREE.Clock();
+
+function animate() {
+
+    requestAnimationFrame(animate);
+
+    const delta = Math.min(clock.getDelta(), 0.05);
+
+    const speed = running ? 18 : 8;
+
+    const forward = moveY;
+    const sideways = moveX;
+
+    const dx =
+        sideways * Math.cos(cameraAngle) -
+        forward * Math.sin(cameraAngle);
+
+    const dz =
+        -sideways * Math.sin(cameraAngle) -
+        forward * Math.cos(cameraAngle);
+
+    const length = Math.sqrt(dx*dx + dz*dz);
+
+    if (length > 0.1) {
+
+        player.position.x += dx / length * speed * delta;
+        player.position.z += dz / length * speed * delta;
+
+        player.rotation.y = Math.atan2(dx, dz);
+    }
+
+    // WORLD BOUNDARIES
+
+    player.position.x = THREE.MathUtils.clamp(
+        player.position.x, -730, 730
+    );
+
+    player.position.z = THREE.MathUtils.clamp(
+        player.position.z, -730, 730
+    );
+
+    // JUMP PHYSICS
+
+    if (jumping) {
+
+        player.position.y += verticalSpeed * delta;
+
+        verticalSpeed -= 20 * delta;
+
+        if (player.position.y <= 0) {
+            player.position.y = 0;
+            verticalSpeed = 0;
+            jumping = false;
+        }
+    }
+
+    updateCamera();
+
+    renderer.render(scene, camera);
+}
+
+updateCamera();
+animate();
+
+// RESIZE
+
+window.addEventListener("resize", () => {
+
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
+
+    renderer.setSize(
+        window.innerWidth,
+        window.innerHeight
+    );
+});
+
+</script>
+</body>
+  </html>
